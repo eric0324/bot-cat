@@ -12,7 +12,7 @@ Simply send chatbot notifications via plugins
 
 == Description ==
 
-[BotCat](https://bot-cat.com) WordPress plugin is the ultimate way to send chatbot message via **LINE**, **LINE Notify**, **Telegram**, and others.
+[BotCat](https://bot-cat.com) plugin is the ultimate way to send chatbot message via **LINE**, **LINE Notify**, **Telegram**, and others.
 
 === Supported extensions and events ===
 
@@ -54,9 +54,9 @@ We already support common chatbot platforms, and we will support more.
 = 1.0.0 =
 Initial version.
 
-== FAQs ==
-= Can I set up sending messages to several people at the same time? =
-Yes, when WordPress sends a message to your channel, it will be received by all channel's subscribers automatically.
+= 1.0.1 =
+* Fixed bc_function name bug.
+
 
 == Installation ==
 

@@ -7,7 +7,7 @@ class BotCatProfileView
 
     }
 
-    public function bc_extra_user_profile_fields(): void
+    public function bot_cat_extra_user_profile_fields(): void
     {
         ?>
         <h2><?php _e('Connect and Get Notifications', 'bot-cat') ?></h2>
