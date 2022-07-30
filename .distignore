@@ -1,5 +1,6 @@
 /.idea
 /.git
 /.github
+/assets
 .distignore
 .gitignore
