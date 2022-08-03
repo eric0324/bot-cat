@@ -52,10 +52,19 @@ We already support common chatbot platforms, and we will support more.
 == Changelog ==
 
 = 1.0.0 =
-Initial version.
+* Initial version.
 
 = 1.0.1 =
 * Fixed bc_function name bug.
+
+= 1.0.2 =
+* Fixed some bug.
+
+= 1.0.3 =
+* Use `action-wordpress-plugin-deploy` to release
+
+= 1.0.3 =
+* Use `action-wordpress-plugin-deploy` to release
 
 
 == Installation ==
