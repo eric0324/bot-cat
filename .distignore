@@ -1,7 +1,7 @@
 /.idea
 /.git
 /.github
-/assets
+/.wordpress-org
 .distignore
 .gitignore
-.readme.md
+readme.md
