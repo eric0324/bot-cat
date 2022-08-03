@@ -15,8 +15,29 @@ class BotCatNotificationOptions
         global $wp_roles;
         $roles = $wp_roles->get_names();
         $options = get_option(BOT_CAT_OPTION_PREFIX . $this->service_name);
-
         ?>
+        <h3><?php _e('Show OAuth Link', 'bot-cat') ?></h3>
+        <table class="form-table">
+            <tr>
+                <th scope="row"><?php _e('Profile', 'bot-cat') ?></th>
+                <td style="line-height: 30px;">
+				    <?php
+				    foreach ($roles as $name => $role) {
+					    ?>
+                        <input
+                                id="oauth_show_profile_<?php echo esc_attr($name) ?>"
+                                type="checkbox"
+                                name="<?php echo esc_attr(BOT_CAT_OPTION_PREFIX . $this->service_name . "[oauth_show_profile][$name]") ?>"
+                                value="1"
+						    <?php if (isset($options['oauth_show_profile'][$name]))
+							    echo esc_attr(checked(1, $options['oauth_show_profile'][$name], false)) ?>
+                        >
+                        <label for="oauth_show_profile_<?php echo esc_attr($name) ?>"><?php echo translate_user_role($role) ?></label>
+				    <?php } ?>
+                </td>
+            </tr>
+        </table>
+        <hr>
         <h3><?php _e('WordPress', 'bot-cat') ?></h3>
         <table class="form-table">
             <tr>

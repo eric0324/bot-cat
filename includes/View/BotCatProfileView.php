@@ -30,9 +30,27 @@ class BotCatProfileView
             $basic_options = get_option(BOT_CAT_OPTION_PREFIX . 'basic');
             $redirect_token = $basic_options['redirect_token'];
 
+            $user = wp_get_current_user();
+            $roles = [];
+            if (isset($user)) {
+	            $roles = $user->roles;
+            }
+
             // LINE
             $options = get_option(BOT_CAT_OPTION_PREFIX . 'line');
-            if (isset($options['is_enable'])) {
+
+            // Check user role need show OAuth button
+            $oauth_show_profile = false;
+            if ($options['oauth_show_profile']) {
+                foreach ($roles as $role) {
+	                if (isset($options['oauth_show_profile'][$role])){
+		                $oauth_show_profile = true;
+                        break;
+	                }
+                }
+            }
+
+            if (isset($options['is_enable']) && $oauth_show_profile) {
                 $url = BOT_CAT_OFFICIAL_URL . 'auth/' . $redirect_token . '/line?user=' . $user_token;
                 $line_uuid = get_user_meta($user_id, BOT_CAT_OPTION_PREFIX . 'line_uuid');
                 ?>
@@ -51,7 +69,19 @@ class BotCatProfileView
 
             // LINE Notify
             $options = get_option(BOT_CAT_OPTION_PREFIX . 'line_notify');
-            if (isset($options['is_enable'])) {
+
+            // Check user role need show OAuth button
+            $oauth_show_profile = false;
+            if ($options['oauth_show_profile']) {
+	            foreach ($roles as $role) {
+		            if (isset($options['oauth_show_profile'][$role])){
+			            $oauth_show_profile = true;
+			            break;
+		            }
+	            }
+            }
+
+            if (isset($options['is_enable'])&& $oauth_show_profile) {
                 $url = BOT_CAT_OFFICIAL_URL . 'auth/' . $redirect_token . '/line_notify?user=' . $user_token;
                 $line_notify_uuid = get_user_meta($user_id, BOT_CAT_OPTION_PREFIX . 'line_notify_uuid');
                 ?>
@@ -70,7 +100,19 @@ class BotCatProfileView
 
             // Telegram
             $options = get_option(BOT_CAT_OPTION_PREFIX . 'telegram');
-            if (isset($options['is_enable'])) {
+
+            // Check user role need show OAuth button
+            $oauth_show_profile = false;
+            if ($options['oauth_show_profile']) {
+	            foreach ($roles as $role) {
+		            if (isset($options['oauth_show_profile'][$role])){
+			            $oauth_show_profile = true;
+			            break;
+		            }
+	            }
+            }
+
+            if (isset($options['is_enable']) && $oauth_show_profile) {
                 $url = BOT_CAT_OFFICIAL_URL . 'redirect/' . $redirect_token . '/telegram?user=' . $user_token;
                 $telegram_uuid = get_user_meta($user_id, BOT_CAT_OPTION_PREFIX . 'telegram_uuid');
                 ?>
