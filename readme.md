@@ -39,23 +39,3 @@ The [BotCat](https://bot-cat.com) plugin for WordPress supports core WordPress e
     * Low Stock
     * Out Of Stock
     * On Backorder
-
-## Changelog
-
-### 1.0.0
-* Initial version.
-
-### 1.0.1
-* Fixed bc_function name bug.
-
-### 1.0.2
-* Fixed some bug.
-
-### 1.0.3
-* Use `action-wordpress-plugin-deploy` to release.
-
-### 1.0.4
-* Set in the admin whether to show the OAuth button on the profile page (for roles).
-
-### 1.0.5
-* Fixed some bug.
