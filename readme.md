@@ -52,7 +52,10 @@ The [BotCat](https://bot-cat.com) plugin for WordPress supports core WordPress e
 * Fixed some bug.
 
 ### 1.0.3
-* Use `action-wordpress-plugin-deploy` to release
+* Use `action-wordpress-plugin-deploy` to release.
 
 ### 1.0.4
-* Set in the admin whether to show the OAuth button on the profile page (for roles)
+* Set in the admin whether to show the OAuth button on the profile page (for roles).
+
+### 1.0.5
+* Fixed some bug.

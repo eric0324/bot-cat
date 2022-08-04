@@ -4,7 +4,7 @@ Tags: notification, WooCommerce, contact form 7, LINE, LINE Notify, telegram
 Requires at least: 6.0
 Requires PHP: 7.4
 Tested up to: 6.0
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,11 +61,13 @@ We already support common chatbot platforms, and we will support more.
 * Fixed some bug.
 
 = 1.0.3 =
-* Use `action-wordpress-plugin-deploy` to release
+* Use `action-wordpress-plugin-deploy` to release.
 
 = 1.0.4 =
-* Set in the admin whether to show the OAuth button on the profile page (for roles)
+* Set in the admin whether to show the OAuth button on the profile page (for roles).
 
+= 1.0.5 =
+* Fixed some bug.
 
 == Installation ==
 
