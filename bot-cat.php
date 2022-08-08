@@ -7,7 +7,7 @@
  * Requires PHP:      5.6
  * Author:            Eric Wu
  * Author URI:        https://ericwu.asia/
- * Version:           1.0.8
+ * Version:           1.0.9
  * Text Domain:       bot-cat
  */
 
