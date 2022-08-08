@@ -76,6 +76,9 @@ We already support common chatbot platforms, and we will support more.
 * Add document link.
 * Fix helper bug.
 
+= 1.0.8 =
+* Fix some bug.
+
 == Installation ==
 
 1. Install the "BotCat" plugin
