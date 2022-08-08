@@ -24,8 +24,12 @@ class BotCatLineAdminView
 
         ?>
         <div class="wrap">
-        <?php if (!isset($options['channel_access_token']) || !$options['channel_access_token'])
-        echo '<div class="update-nag notice notice-error inline">' . __('Please go to Bot Cat Console to input settings', 'bot-cat') . ': <a href="https://bot-cat.com">https://bot-cat.com</a></div>'
+        <?php
+            if (!isset($options['channel_access_token']) || !$options['channel_access_token']) {
+	            $url = 'https://bot-cat.com/console/line';
+	            $link = sprintf( wp_kses( __( 'Please go to <a href="%s">Bot Cat Console</a> to input settings .', 'bot-cat' ), array(  'a' => array( 'href' => array() ) ) ), esc_url( $url ) );
+	            echo '<div class="update-nag notice notice-warning inline">' . $link . '</div>';
+            }
         ?>
         <h2><?php _e('LINE Settings', 'bot-cat') ?></h2>
         <form method="post" action="options.php">
