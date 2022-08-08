@@ -1,6 +1,6 @@
 === BotCat ===
 Contributors: eric0324
-Tags: notification, WooCommerce, contact form 7, LINE, LINE Notify, telegram
+Tags: notification, WooCommerce, contact form 7, LINE, telegram
 Requires at least: 6.0
 Requires PHP: 7.4
 Tested up to: 6.0

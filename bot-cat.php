@@ -9,7 +9,6 @@
  * Author URI:        https://ericwu.asia/
  * Version:           1.0.6
  * Text Domain:       bot-cat
- * Domain Path:       languages
  */
 
 define('BOT_CAT_PLUGIN_DIR', plugin_dir_path(__FILE__));
