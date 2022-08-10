@@ -11,7 +11,7 @@ class BotCatAdminView
     {
         add_menu_page(
             'Home',
-            'Home',
+            'BotCat',
             'manage_options',
             'bot-cat',
             [&$this, 'view'],
