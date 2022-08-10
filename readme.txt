@@ -51,39 +51,39 @@ We already support common chatbot platforms, and we will support more.
 
 == Changelog ==
 
-= 1.0.0 =
-* Initial version.
+= 1.0.10 =
+* Fix menu title.
 
-= 1.0.1 =
-* Fixed bc_function name bug.
+= 1.0.9 =
+* Fix some bug.
 
-= 1.0.2 =
-* Fixed some bug.
-
-= 1.0.3 =
-* Use `action-wordpress-plugin-deploy` to release.
-
-= 1.0.4 =
-* Set in the admin whether to show the OAuth button on the profile page (for roles).
-
-= 1.0.5 =
-* Fixed some bug.
-
-= 1.0.6 =
-* Fixed some bug.
+= 1.0.8 =
+* Fix some bug.
 
 = 1.0.7 =
 * Add document link.
 * Fix helper bug.
 
-= 1.0.8 =
-* Fix some bug.
+= 1.0.6 =
+* Fixed some bug.
 
-= 1.0.9 =
-* Fix some bug.
+= 1.0.5 =
+* Fixed some bug.
 
-= 1.0.10 =
-* Fix menu title.
+= 1.0.4 =
+* Set in the admin whether to show the OAuth button on the profile page (for roles).
+
+= 1.0.3 =
+* Use `action-wordpress-plugin-deploy` to release.
+
+= 1.0.2 =
+* Fixed some bug.
+
+= 1.0.1 =
+* Fixed bc_function name bug.
+
+= 1.0.0 =
+* Initial version.
 
 == Installation ==
 
