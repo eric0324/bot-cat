@@ -2,9 +2,12 @@
 
 class BotCatOAuthService {
 	public function oauth_view(): string {
-		$html = '<table class="form-table">';
-
 		$user_info = wp_get_current_user();
+
+		if (!$user_info) {
+			return '';
+		}
+
 		$user_id = $user_info->data->ID;
 
 		$user_token = get_user_meta($user_id, BOT_CAT_OPTION_PREFIX . '_token');
@@ -25,6 +28,8 @@ class BotCatOAuthService {
 		if (isset($user)) {
 			$roles = $user->roles;
 		}
+
+		$html = '<table class="form-table">';
 
 		// LINE
 		$options = get_option(BOT_CAT_OPTION_PREFIX . 'line');
