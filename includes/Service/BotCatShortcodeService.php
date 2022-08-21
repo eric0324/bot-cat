@@ -7,7 +7,6 @@ class BotCatShortcodeService {
 	}
 
 	public function oauth_button_list(){
-		$bot_cat_oauth_service = new BotCatOAuthService();
-		return $bot_cat_oauth_service->oauth_view();
+		return ( new BotCatOAuthService() )->oauth_view();
 	}
 }
