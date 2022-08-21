@@ -22,16 +22,21 @@ const SERVICES = ['line', 'line_notify', 'telegram'];
  * Import dependent codes
  */
 require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/Partial/BotCatNotificationOptions.php';
+
 require_once BOT_CAT_PLUGIN_DIR . '/includes/View/BotCatProfileView.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatAdminView.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatLineAdminView.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatLineNotifyAdminView.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatTelegramAdminView.php';
+
+require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatOAuthService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatLineNotifyService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatLineService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatTelegramService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatNotificationService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatRoleService.php';
+require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatShortcodeService.php';
+
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Auth/BotCatBasic.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Auth/BotCatLineAuth.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Auth/BotCatLineNotifyAuth.php';
@@ -48,59 +53,66 @@ register_setting(BOT_CAT_OPTION_PREFIX . 'telegram', BOT_CAT_OPTION_PREFIX . 'te
 
 
 /**
+ * Shortcode
+ */
+$shortcode_service = new BotCatShortcodeService();
+
+add_action('init', [$shortcode_service, 'register_shortcodes']);
+
+/**
  * Profile page
  */
-$profile = new BotCatProfileView();
+$bot_cat_profile_view = new BotCatProfileView();
 
-add_action('show_user_profile', [$profile, 'bot_cat_extra_user_profile_fields']);
-add_action('edit_user_profile', [$profile, 'bot_cat_extra_user_profile_fields']);
+add_action('show_user_profile', [$bot_cat_profile_view, 'bot_cat_extra_user_profile_fields']);
+add_action('edit_user_profile', [$bot_cat_profile_view, 'bot_cat_extra_user_profile_fields']);
 if (class_exists('WooCommerce')) {
-    add_action('woocommerce_edit_account_form', [$profile, 'bot_cat_extra_user_profile_fields']);
+    add_action('woocommerce_edit_account_form', [$bot_cat_profile_view, 'bot_cat_extra_user_profile_fields']);
 }
 
 
 /**
  * Admin Pages
  */
-$admin_page = new BotCatAdminView();
-$line_admin_page = new BotCatLineAdminView();
-$line_notify_admin_page = new BotCatLineNotifyAdminView();
-$telegram_admin_page = new BotCatTelegramAdminView();
+$bot_cat_admin_view             = new BotCatAdminView();
+$bot_cat_line_admin_view        = new BotCatLineAdminView();
+$bot_cat_line_notify_admin_view = new BotCatLineNotifyAdminView();
+$bot_cat_telegram_admin_view = new BotCatTelegramAdminView();
 
-add_action('admin_menu', [$admin_page, 'bot_cat_admin']);
-add_action('admin_menu', [$line_admin_page, 'bot_cat_line_admin']);
-add_action('admin_menu', [$line_notify_admin_page, 'bot_cat_line_notify_admin']);
-add_action('admin_menu', [$telegram_admin_page, 'bot_cat_telegram_admin']);
+add_action('admin_menu', [$bot_cat_admin_view, 'bot_cat_admin']);
+add_action('admin_menu', [$bot_cat_line_admin_view, 'bot_cat_line_admin']);
+add_action('admin_menu', [$bot_cat_line_notify_admin_view, 'bot_cat_line_notify_admin']);
+add_action('admin_menu', [$bot_cat_telegram_admin_view, 'bot_cat_telegram_admin']);
 
 
 /**
  * Auth API
  */
-$line_auth = new BotCatLineAuth();
-$line_notify_auth = new BotCatLineNotifyAuth();
-$telegram_auth = new BotCatTelegramAuth();
-add_action('rest_api_init', [$line_auth, 'register_rest_route']);
-add_action('rest_api_init', [$line_notify_auth, 'register_rest_route']);
-add_action('rest_api_init', [$telegram_auth, 'register_rest_route']);
+$bot_cat_line_auth        = new BotCatLineAuth();
+$bot_cat_line_notify_auth = new BotCatLineNotifyAuth();
+$bot_cat_telegram_auth            = new BotCatTelegramAuth();
+add_action('rest_api_init', [$bot_cat_line_auth, 'register_rest_route']);
+add_action('rest_api_init', [$bot_cat_line_notify_auth, 'register_rest_route']);
+add_action('rest_api_init', [$bot_cat_telegram_auth, 'register_rest_route']);
 
 
 /**
  * Notification
  */
-$notification_service = new BotCatNotificationService();
+$bot_cat_notification_service = new BotCatNotificationService();
 
-add_action('comment_post', [$notification_service, 'bot_cat_new_comment_alert'], 10, 1);
-add_action('user_register', [$notification_service, 'bot_cat_new_user_alert'], 10, 1);
-add_action('wp_insert_post', [$notification_service, 'bot_cat_post_publish_alert'], 10, 3);
-add_action('wp_insert_post', [$notification_service, 'bot_cat_post_review_alert'], 10, 3);
+add_action('comment_post', [$bot_cat_notification_service, 'bot_cat_new_comment_alert'], 10, 1);
+add_action('user_register', [$bot_cat_notification_service, 'bot_cat_new_user_alert'], 10, 1);
+add_action('wp_insert_post', [$bot_cat_notification_service, 'bot_cat_post_publish_alert'], 10, 3);
+add_action('wp_insert_post', [$bot_cat_notification_service, 'bot_cat_post_review_alert'], 10, 3);
 
 if (!function_exists('is_plugin_active')) {
     include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 }
 
 if (is_plugin_active('woocommerce/woocommerce.php')) {
-    add_action('transition_post_status', [$notification_service, 'bot_cat_new_product_alert'], 10, 3);
-    add_action('woocommerce_low_stock', [$notification_service, 'bot_cat_low_stock_alert'], 10, 1);
-    add_action('woocommerce_no_stock', [$notification_service, 'bot_cat_no_stock_alert'], 10, 1);
-    add_action('woocommerce_new_order', [$notification_service, 'bot_cat_new_order_alert'], 1, 1);
+    add_action('transition_post_status', [$bot_cat_notification_service, 'bot_cat_new_product_alert'], 10, 3);
+    add_action('woocommerce_low_stock', [$bot_cat_notification_service, 'bot_cat_low_stock_alert'], 10, 1);
+    add_action('woocommerce_no_stock', [$bot_cat_notification_service, 'bot_cat_no_stock_alert'], 10, 1);
+    add_action('woocommerce_new_order', [$bot_cat_notification_service, 'bot_cat_new_order_alert'], 1, 1);
 }
