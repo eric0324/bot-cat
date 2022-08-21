@@ -14,7 +14,7 @@ class BotCatNotificationService
     /**
      * @throws JsonException
      */
-    public function bc_post_publish_alert($post_ID, $post, $update): void
+    public function bot_cat_post_publish_alert($post_ID, $post, $update): void
     {
         if ($post->post_type !== 'post') {
             return;
@@ -48,7 +48,7 @@ class BotCatNotificationService
     /**
      * @throws JsonException
      */
-    public function bc_post_review_alert($post_ID, $post, $update): void
+    public function bot_cat_post_review_alert($post_ID, $post, $update): void
     {
         if ($post->post_type !== 'post') {
             return;
@@ -82,7 +82,7 @@ class BotCatNotificationService
     /**
      * @throws JsonException
      */
-    public function bc_new_comment_alert($comment_ID): void
+    public function bot_cat_new_comment_alert($comment_ID): void
     {
         $service_uuids = $this->roleService->get_service_uuids('new_comments');
         $comment = get_comment($comment_ID);
@@ -105,7 +105,7 @@ class BotCatNotificationService
 
     }
 
-    public function bc_new_user_alert($user_ID)
+    public function bot_cat_new_user_alert($user_ID)
     {
 
         $service_uuids = $this->roleService->get_service_uuids('new_users');
@@ -134,7 +134,7 @@ class BotCatNotificationService
     /**
      * @throws JsonException
      */
-    public function bc_new_product_alert($new_status, $old_status, $post): void
+    public function bot_cat_new_product_alert($new_status, $old_status, $post): void
     {
         if (
             'product' !== $post->post_type ||
@@ -167,7 +167,7 @@ class BotCatNotificationService
     /**
      * @throws JsonException
      */
-    public function bc_low_stock_alert($product): void
+    public function bot_cat_low_stock_alert($product): void
     {
         $service_uuids = $this->roleService->get_service_uuids('low_stock_product');
 
@@ -192,7 +192,7 @@ class BotCatNotificationService
     /**
      * @throws JsonException
      */
-    public function bc_no_stock_alert($product): void
+    public function bot_cat_no_stock_alert($product): void
     {
         $service_uuids = $this->roleService->get_service_uuids('out_stock_product');
 
@@ -217,7 +217,7 @@ class BotCatNotificationService
     /**
      * @throws JsonException
      */
-    public function bc_new_order_alert($order_ID): void
+    public function bot_cat_new_order_alert($order_ID): void
     {
         $order = wc_get_order($order_ID);
 
