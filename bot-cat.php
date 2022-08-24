@@ -29,6 +29,7 @@ require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatLineAdminView.php'
 require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatLineNotifyAdminView.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatTelegramAdminView.php';
 
+require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatAuthService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatOAuthService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatLineNotifyService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatLineService.php';
@@ -37,19 +38,18 @@ require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatNotificationService.p
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatRoleService.php';
 require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatShortcodeService.php';
 
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Auth/BotCatBasic.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Auth/BotCatLineAuth.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Auth/BotCatLineNotifyAuth.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Auth/BotCatTelegramAuth.php';
+require_once BOT_CAT_PLUGIN_DIR . '/includes/Api/BotCatLineAuthApi.php';
+require_once BOT_CAT_PLUGIN_DIR . '/includes/Api/BotCatLineNotifyAuthApi.php';
+require_once BOT_CAT_PLUGIN_DIR . '/includes/Api/BotCatTelegramAuthApi.php';
 
 
 /**
  * Registration Options Group
  */
-register_setting(BOT_CAT_OPTION_PREFIX . 'basic', BOT_CAT_OPTION_PREFIX . 'basic');
-register_setting(BOT_CAT_OPTION_PREFIX . 'line_notify', BOT_CAT_OPTION_PREFIX . 'line_notify');
-register_setting(BOT_CAT_OPTION_PREFIX . 'line', BOT_CAT_OPTION_PREFIX . 'line');
-register_setting(BOT_CAT_OPTION_PREFIX . 'telegram', BOT_CAT_OPTION_PREFIX . 'telegram');
+register_setting( BOT_CAT_OPTION_PREFIX . 'basic', BOT_CAT_OPTION_PREFIX . 'basic' );
+register_setting( BOT_CAT_OPTION_PREFIX . 'line_notify', BOT_CAT_OPTION_PREFIX . 'line_notify' );
+register_setting( BOT_CAT_OPTION_PREFIX . 'line', BOT_CAT_OPTION_PREFIX . 'line' );
+register_setting( BOT_CAT_OPTION_PREFIX . 'telegram', BOT_CAT_OPTION_PREFIX . 'telegram' );
 
 
 /**
@@ -79,21 +79,21 @@ $bot_cat_line_admin_view        = new BotCatLineAdminView();
 $bot_cat_line_notify_admin_view = new BotCatLineNotifyAdminView();
 $bot_cat_telegram_admin_view = new BotCatTelegramAdminView();
 
-add_action('admin_menu', [$bot_cat_admin_view, 'bot_cat_admin']);
-add_action('admin_menu', [$bot_cat_line_admin_view, 'bot_cat_line_admin']);
-add_action('admin_menu', [$bot_cat_line_notify_admin_view, 'bot_cat_line_notify_admin']);
-add_action('admin_menu', [$bot_cat_telegram_admin_view, 'bot_cat_telegram_admin']);
+add_action( 'admin_menu', [ $bot_cat_admin_view, 'bot_cat_admin' ] );
+add_action( 'admin_menu', [ $bot_cat_line_admin_view, 'bot_cat_line_admin' ] );
+add_action( 'admin_menu', [ $bot_cat_line_notify_admin_view, 'bot_cat_line_notify_admin' ] );
+add_action( 'admin_menu', [ $bot_cat_telegram_admin_view, 'bot_cat_telegram_admin' ] );
 
 
 /**
  * Auth API
  */
-$bot_cat_line_auth        = new BotCatLineAuth();
-$bot_cat_line_notify_auth = new BotCatLineNotifyAuth();
-$bot_cat_telegram_auth            = new BotCatTelegramAuth();
-add_action('rest_api_init', [$bot_cat_line_auth, 'register_rest_route']);
-add_action('rest_api_init', [$bot_cat_line_notify_auth, 'register_rest_route']);
-add_action('rest_api_init', [$bot_cat_telegram_auth, 'register_rest_route']);
+$bot_cat_line_auth_api        = new BotCatLineAuthApi();
+$bot_cat_line_notify_auth_api = new BotCatLineNotifyAuthApi();
+$bot_cat_telegram_auth_api    = new BotCatTelegramAuthApi();
+add_action( 'rest_api_init', [ $bot_cat_line_auth_api, 'register_rest_route' ] );
+add_action( 'rest_api_init', [ $bot_cat_line_notify_auth_api, 'register_rest_route' ] );
+add_action( 'rest_api_init', [ $bot_cat_telegram_auth_api, 'register_rest_route' ] );
 
 
 /**
@@ -101,9 +101,9 @@ add_action('rest_api_init', [$bot_cat_telegram_auth, 'register_rest_route']);
  */
 $bot_cat_notification_service = new BotCatNotificationService();
 
-add_action('comment_post', [$bot_cat_notification_service, 'bot_cat_new_comment_alert'], 10, 1);
-add_action('user_register', [$bot_cat_notification_service, 'bot_cat_new_user_alert'], 10, 1);
-add_action('wp_insert_post', [$bot_cat_notification_service, 'bot_cat_post_publish_alert'], 10, 3);
+add_action( 'comment_post', [ $bot_cat_notification_service, 'bot_cat_new_comment_alert' ], 10, 1 );
+add_action( 'user_register', [ $bot_cat_notification_service, 'bot_cat_new_user_alert' ], 10, 1 );
+add_action( 'wp_insert_post', [ $bot_cat_notification_service, 'bot_cat_post_publish_alert' ], 10, 3 );
 add_action('wp_insert_post', [$bot_cat_notification_service, 'bot_cat_post_review_alert'], 10, 3);
 
 if (!function_exists('is_plugin_active')) {

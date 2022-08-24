@@ -2,13 +2,21 @@
 
 class BotCatProfileView
 {
-    public function bot_cat_extra_user_profile_fields(): void
-    {
-        $bot_cat_oauth_service = new BotCatOAuthService();
+	/**
+	 * @var BotCatOAuthService
+	 */
+	private $bot_cat_oauth_service;
 
+	public function __construct()
+	{
+		$this->bot_cat_oauth_service = new BotCatOAuthService();
+	}
+
+	public function bot_cat_extra_user_profile_fields(): void
+    {
 		?> <?php
-	    $html = $bot_cat_oauth_service->oauth_view();
-	    echo($html);
+		    $html = $this->bot_cat_oauth_service->oauth_view();
+		    echo($html);
 	    ?> <?php
     }
 }
