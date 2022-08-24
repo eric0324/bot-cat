@@ -21,26 +21,28 @@ const SERVICES = ['line', 'line_notify', 'telegram'];
 /**
  * Import dependent codes
  */
-require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/Partial/BotCatNotificationOptions.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/Partial/BotCatNotificationOptions.php';
 
-require_once BOT_CAT_PLUGIN_DIR . '/includes/View/BotCatProfileView.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatAdminView.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatLineAdminView.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatLineNotifyAdminView.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/View/Admin/BotCatTelegramAdminView.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/View/BotCatProfileView.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatAdminView.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatLineAdminView.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatLineNotifyAdminView.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatTelegramAdminView.php';
 
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatAuthService.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatOAuthService.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatLineNotifyService.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatLineService.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatTelegramService.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatNotificationService.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatRoleService.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Service/BotCatShortcodeService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatAuthService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatOAuthService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatLineNotifyService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatLineService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatTelegramService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatMessageService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatNotificationService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatRoleService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatShortcodeService.php';
 
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Api/BotCatLineAuthApi.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Api/BotCatLineNotifyAuthApi.php';
-require_once BOT_CAT_PLUGIN_DIR . '/includes/Api/BotCatTelegramAuthApi.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Api/BotCatMessageApi.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Api/BotCatLineAuthApi.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Api/BotCatLineNotifyAuthApi.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Api/BotCatTelegramAuthApi.php';
 
 
 /**
@@ -86,14 +88,16 @@ add_action( 'admin_menu', [ $bot_cat_telegram_admin_view, 'bot_cat_telegram_admi
 
 
 /**
- * Auth API
+ * APIs
  */
 $bot_cat_line_auth_api        = new BotCatLineAuthApi();
 $bot_cat_line_notify_auth_api = new BotCatLineNotifyAuthApi();
 $bot_cat_telegram_auth_api    = new BotCatTelegramAuthApi();
+$bot_cat_message_api          = new BotCatMessageApi();
 add_action( 'rest_api_init', [ $bot_cat_line_auth_api, 'register_rest_route' ] );
 add_action( 'rest_api_init', [ $bot_cat_line_notify_auth_api, 'register_rest_route' ] );
 add_action( 'rest_api_init', [ $bot_cat_telegram_auth_api, 'register_rest_route' ] );
+add_action( 'rest_api_init', [ $bot_cat_message_api , 'register_rest_route' ] );
 
 
 /**

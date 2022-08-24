@@ -11,7 +11,11 @@ class BotCatAuthService {
 	public function check_key( $request ): bool {
 		$options = get_option( BOT_CAT_OPTION_PREFIX . 'basic' );
 
-		$BOT_CAT_key = json_encode( $request->get_header( 'BOT_CAT_key' ), JSON_THROW_ON_ERROR );
+		$BOT_CAT_key = json_encode( $request->get_header( 'BOT_CAT_Key' ), JSON_THROW_ON_ERROR );
+
+		if (!$options['key']) {
+			return false;
+		}
 
 		return '"' . $options['key'] . '"' === $BOT_CAT_key;
 	}
@@ -22,11 +26,9 @@ class BotCatAuthService {
 	 * @return array
 	 */
 	public function get_user_by_token( $request ): array {
-		$users = get_users( [
+		return get_users( [
 			'meta_key'   => BOT_CAT_OPTION_PREFIX . 'token',
 			'meta_value' => $request['user_token']
 		] );
-
-		return $users;
 	}
 }
