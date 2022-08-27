@@ -91,7 +91,7 @@ class BotCatNotificationService {
 	public function bot_cat_new_user_alert( $user_ID ): void {
 		$user = get_userdata($user_ID);
 
-		$uuids = $this->bot_cat_role_service->get_can_receive_user_type_uuids( 'new_comment', $user );
+		$uuids = $this->bot_cat_role_service->get_can_receive_user_type_uuids( 'new_user', $user );
 
 		$messages = $this->bot_cat_message_service->generate_new_user_text( $user );
 

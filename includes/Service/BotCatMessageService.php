@@ -6,8 +6,8 @@ class BotCatMessageService {
 	private $bot_cat_admin_message;
 
 	public function __construct() {
-		$this->bot_cat_user_message = get_option( BOT_CAT_OPTION_PREFIX . 'message_user' );
-		$this->bot_cat_admin_message = get_option( BOT_CAT_OPTION_PREFIX . 'message_admin' );
+		$this->bot_cat_admin_message = get_option( BOT_CAT_OPTION_PREFIX . 'admin_message' );
+		$this->bot_cat_user_message  = get_option( BOT_CAT_OPTION_PREFIX . 'user_message' );
 	}
 
 
@@ -23,21 +23,50 @@ class BotCatMessageService {
 
 	public function generate_post_review_text( $post ): array {
 		$admin_message = 'Admin 新審核文章';
-		$user_message = 'user 新審核文章';
+		$user_message  = 'user 新審核文章';
 
 		return [
-			'admin'  => $admin_message,
-			'user' => $user_message
+			'admin' => $admin_message,
+			'user'  => $user_message
 		];
 	}
 
+	/**
+	 * Generate new comment text
+	 *
+	 * @param $comment
+	 *
+	 * @return array
+	 */
 	public function generate_new_comment_text( $comment ): array {
-		$admin_message = 'Admin 新回覆';
-		$user_message = 'user 新回覆';
+		$admin_message = '[Admin] 新回覆';
+		$user_message  = '[User] 新回覆';
+
+		$admin_message_template = $this->bot_cat_admin_message['new_comment'];
+		$user_message_template  = $this->bot_cat_user_message['new_comment'];
+
+		$userdata = get_userdata( $comment->user_id );
+
+		$keyword_text = [
+			'[author_email]' => $comment->comment_author_email,
+			'[content]'      => $comment->comment_content,
+			'[date]'         => $comment->comment_date,
+			'[id]'           => $comment->comment_ID,
+			'[author_ip]'    => $comment->comment_author_ip,
+			'[author_name]'  => $userdata->display_name
+		];
+
+		if ( $admin_message_template ) {
+			$admin_message = str_ireplace( array_keys( $keyword_text ), $keyword_text, $admin_message_template );
+		}
+
+		if ( $user_message_template ) {
+			$user_message = str_ireplace( array_keys( $keyword_text ), $keyword_text, $user_message_template );
+		}
 
 		return [
-			'admin'  => $admin_message,
-			'user' => $user_message
+			'admin' => $admin_message,
+			'user'  => $user_message
 		];
 	}
 
