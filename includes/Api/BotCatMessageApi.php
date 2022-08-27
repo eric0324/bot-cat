@@ -14,9 +14,9 @@ class BotCatMessageApi {
 			'permission_callback' => '__return_true'
 		] );
 
-		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/message/client', [
+		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/message/user', [
 			'methods'             => 'POST',
-			'callback'            => [ &$this, 'store_client_message' ],
+			'callback'            => [ &$this, 'store_user_message' ],
 			'permission_callback' => '__return_true'
 		] );
 	}
@@ -43,14 +43,14 @@ class BotCatMessageApi {
 	 * @return void
 	 * @throws JsonException
 	 */
-	public function store_client_message( $request ): void {
+	public function store_user_message( $request ): void {
 		$can_access = $this->botCatBasicAuthService->check_key( $request );
 
 		if ( ! $can_access ) {
 			wp_send_json( [ 'Message' => 'Unauthorized' ], 401 );
 		}
 
-		update_option( BOT_CAT_OPTION_PREFIX . 'client_message', $request['messages'] );
+		update_option( BOT_CAT_OPTION_PREFIX . 'user_message', $request['messages'] );
 	}
 
 }
