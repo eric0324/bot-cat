@@ -2,13 +2,11 @@
 
 class BotCatMessageService {
 
-	private $bot_cat_user_message;
-	private $bot_cat_admin_message;
+	private $bot_cat_message;
 
 	public function __construct() {
-		$this->bot_cat_admin_message = get_option( BOT_CAT_OPTION_PREFIX . 'messages' );
+		$this->bot_cat_message = get_option( BOT_CAT_OPTION_PREFIX . 'messages' );
 	}
-
 
 	public function generate_post_publish_text( $post ): array {
 		$admin_message = 'Admin 新文章';
@@ -41,8 +39,8 @@ class BotCatMessageService {
 		$admin_message = '[Admin] 新回覆';
 		$user_message  = '[User] 新回覆';
 
-		$admin_message_template = $this->bot_cat_admin_message['admin']['new_comment'];
-		$user_message_template  = $this->bot_cat_user_message['users']['new_comment'];
+		$admin_message_template = $this->bot_cat_message['admin']['new_comment'];
+		$user_message_template  = $this->bot_cat_message['users']['new_comment'];
 
 		$userdata = get_userdata( $comment->user_id );
 
