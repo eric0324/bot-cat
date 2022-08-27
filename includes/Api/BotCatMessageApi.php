@@ -8,15 +8,9 @@ class BotCatMessageApi {
 	}
 
 	public function register_rest_route(): void {
-		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/message/admin', [
+		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/messages', [
 			'methods'             => 'POST',
-			'callback'            => [ &$this, 'store_admin_message' ],
-			'permission_callback' => '__return_true'
-		] );
-
-		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/message/user', [
-			'methods'             => 'POST',
-			'callback'            => [ &$this, 'store_user_message' ],
+			'callback'            => [ &$this, 'store_messages' ],
 			'permission_callback' => '__return_true'
 		] );
 	}
@@ -27,30 +21,15 @@ class BotCatMessageApi {
 	 * @return void
 	 * @throws JsonException
 	 */
-	public function store_admin_message( $request ): void {
+	public function store_messages( $request ): void {
 		$can_access = $this->botCatBasicAuthService->check_key( $request );
 
 		if ( ! $can_access ) {
 			wp_send_json( [ 'Message' => 'Unauthorized' ], 401 );
 		}
 
-		update_option( BOT_CAT_OPTION_PREFIX . 'admin_message', $request['messages'] );
+		update_option( BOT_CAT_OPTION_PREFIX . 'messages', $request['messages'] );
 	}
 
-	/**
-	 * @param $request
-	 *
-	 * @return void
-	 * @throws JsonException
-	 */
-	public function store_user_message( $request ): void {
-		$can_access = $this->botCatBasicAuthService->check_key( $request );
-
-		if ( ! $can_access ) {
-			wp_send_json( [ 'Message' => 'Unauthorized' ], 401 );
-		}
-
-		update_option( BOT_CAT_OPTION_PREFIX . 'user_message', $request['messages'] );
-	}
 
 }

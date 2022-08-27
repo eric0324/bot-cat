@@ -6,8 +6,7 @@ class BotCatMessageService {
 	private $bot_cat_admin_message;
 
 	public function __construct() {
-		$this->bot_cat_admin_message = get_option( BOT_CAT_OPTION_PREFIX . 'admin_message' );
-		$this->bot_cat_user_message  = get_option( BOT_CAT_OPTION_PREFIX . 'user_message' );
+		$this->bot_cat_admin_message = get_option( BOT_CAT_OPTION_PREFIX . 'messages' );
 	}
 
 
@@ -42,8 +41,8 @@ class BotCatMessageService {
 		$admin_message = '[Admin] 新回覆';
 		$user_message  = '[User] 新回覆';
 
-		$admin_message_template = $this->bot_cat_admin_message['new_comment'];
-		$user_message_template  = $this->bot_cat_user_message['new_comment'];
+		$admin_message_template = $this->bot_cat_admin_message['admin']['new_comment'];
+		$user_message_template  = $this->bot_cat_user_message['users']['new_comment'];
 
 		$userdata = get_userdata( $comment->user_id );
 
