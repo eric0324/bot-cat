@@ -1,7 +1,7 @@
 <?php
 
 class BotCatOAuthService {
-	public function oauth_view(): string {
+	public function bot_cat_oauth_view(): string {
 		$user_info = wp_get_current_user();
 
 		if ( ! $user_info ) {

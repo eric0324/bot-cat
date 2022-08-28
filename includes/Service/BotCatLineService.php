@@ -13,7 +13,7 @@ class BotCatLineService
     /**
      * @throws JsonException
      */
-    public function send_text_message($to, $message)
+    public function bot_cat_send_text_message($to, $message)
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'line');
 
