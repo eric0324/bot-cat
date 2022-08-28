@@ -9,6 +9,8 @@ class BotCatMessageService {
 	}
 
 	/**
+	 * Generate post type text
+	 *
 	 * @param $action_name
 	 * @param $post
 	 *
@@ -27,9 +29,9 @@ class BotCatMessageService {
 			'[author]'  => $userdata->display_name
 		];
 
-		return $this->bot_cat_str_ireplace_meesage(
-			__( '[Admin] Post published.', 'bot-cat' ),
-			__( 'Post published.', 'bot-cat' ),
+		return $this->bot_cat_str_replace_message(
+			__( '[Admin] Post type message', 'bot-cat' ),
+			__( 'Post type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
 			$this->bot_cat_message['users'][ $action_name ]
@@ -37,7 +39,7 @@ class BotCatMessageService {
 	}
 
 	/**
-	 * Generate new comment text
+	 * Generate comment type text
 	 *
 	 * @param $action_name
 	 * @param $comment
@@ -57,9 +59,9 @@ class BotCatMessageService {
 			'[author_name]'  => $userdata->display_name
 		];
 
-		return $this->bot_cat_str_ireplace_meesage(
-			__( '[Admin] New comment.', 'bot-cat' ),
-			__( 'New comment.', 'bot-cat' ),
+		return $this->bot_cat_str_replace_message(
+			__( '[Admin] Comment type message', 'bot-cat' ),
+			__( 'Comment type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
 			$this->bot_cat_message['users'][ $action_name ]
@@ -67,6 +69,8 @@ class BotCatMessageService {
 	}
 
 	/**
+	 * Generate user type text
+	 *
 	 * @param $action_name
 	 * @param $user
 	 *
@@ -81,15 +85,23 @@ class BotCatMessageService {
 			'[email]'           => $user->user_email
 		];
 
-		return $this->bot_cat_str_ireplace_meesage(
-			__( '[Admin] New user.', 'bot-cat' ),
-			__( 'New user.', 'bot-cat' ),
+		return $this->bot_cat_str_replace_message(
+			__( '[Admin] User type message', 'bot-cat' ),
+			__( 'User type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
 			$this->bot_cat_message['users'][ $action_name ]
 		);
 	}
 
+	/**
+	 * Generate product type text
+	 *
+	 * @param $action_name
+	 * @param $product
+	 *
+	 * @return array
+	 */
 	public function bot_cat_generate_product_type_text( $action_name, $product ): array {
 		$keyword_text = [
 			'[name]'              => $product->get_name(),
@@ -115,55 +127,77 @@ class BotCatMessageService {
 			'[link]'              => get_permalink( $product->get_id() )
 		];
 
-		return $this->bot_cat_str_ireplace_meesage(
-			__( '[Admin] New product.', 'bot-cat' ),
-			__( 'New product.', 'bot-cat' ),
+		return $this->bot_cat_str_replace_message(
+			__( '[Admin] Product type message', 'bot-cat' ),
+			__( 'Product type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
 			$this->bot_cat_message['users'][ $action_name ]
 		);
 	}
 
+	/**
+	 * Generate order type text
+	 *
+	 * @param $action_name
+	 * @param $order
+	 *
+	 * @return array
+	 */
 	public function bot_cat_generate_order_type_text( $action_name, $order ): array {
 		$keyword_text = [
-			'[total]'               => $order,
-			'[order_product]'       => $order,
-			'[payment_method]'      => $order,
-			'[order_time]'          => $order,
-			'[customer_note]'       => $order,
-			'[billing_first_name]'  => $order,
-			'[billing_last_name]'   => $order,
-			'[billing_company]'     => $order,
-			'[billing_address_1]'   => $order,
-			'[billing_address_2]'   => $order,
-			'[billing_city]'        => $order,
-			'[billing_state]'       => $order,
-			'[billing_postcode]'    => $order,
-			'[billing_country]'     => $order,
-			'[billing_email]'       => $order,
-			'[billing_phone]'       => $order,
-			'[shipping_first_name]' => $order,
-			'[shipping_last_name]'  => $order,
-			'[shipping_company]'    => $order,
-			'[shipping_address_1]'  => $order,
-			'[shipping_address_2]'  => $order,
-			'[shipping_city]'       => $order,
-			'[shipping_state]'      => $order,
-			'[shipping_postcode]'   => $order,
-			'[shipping_country]'    => $order,
-			'[shipping_phone]'      => $order
+			'[total]'               => $order->get_total(),
+			'[payment_method]'      => $order->get_payment_method(),
+			'[order_time]'          => $order->get_date_created(),
+			'[customer_note]'       => $order->get_customer_note(),
+			'[billing_first_name]'  => $order->get_billing_first_name(),
+			'[billing_last_name]'   => $order->get_billing_last_name(),
+			'[billing_company]'     => $order->get_billing_company(),
+			'[billing_address_1]'   => $order->get_billing_address_1(),
+			'[billing_address_2]'   => $order->get_billing_address_2(),
+			'[billing_city]'        => $order->get_billing_city(),
+			'[billing_state]'       => $order->get_billing_state(),
+			'[billing_postcode]'    => $order->get_billing_postcode(),
+			'[billing_country]'     => $order->get_billing_country(),
+			'[billing_email]'       => $order->get_billing_email(),
+			'[billing_phone]'       => $order->get_billing_phone(),
+			'[shipping_first_name]' => $order->get_shipping_first_name(),
+			'[shipping_last_name]'  => $order->get_shipping_last_name(),
+			'[shipping_company]'    => $order->get_shipping_company(),
+			'[shipping_address_1]'  => $order->get_shipping_address_1(),
+			'[shipping_address_2]'  => $order->get_shipping_address_2(),
+			'[shipping_city]'       => $order->get_shipping_city(),
+			'[shipping_state]'      => $order->get_shipping_state(),
+			'[shipping_postcode]'   => $order->get_shipping_postcode(),
+			'[shipping_country]'    => $order->get_shipping_country(),
+			'[shipping_phone]'      => $order->get_shipping_phone()
 		];
 
-		return $this->bot_cat_str_ireplace_meesage(
-			__( '[Admin] New order.', 'bot-cat' ),
-			__( 'New order.', 'bot-cat' ),
+		$item_string = '';
+		foreach ( $order->get_items() as $item_id => $item ) {
+			$item_string .= ($item->get_name() . ' ');
+		}
+		$keyword_text['[order_product]'] = $item_string;
+
+		return $this->bot_cat_str_replace_message(
+			__( '[Admin] Order type message', 'bot-cat' ),
+			__( 'Order type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
 			$this->bot_cat_message['users'][ $action_name ]
 		);
 	}
 
-	private function bot_cat_str_ireplace_meesage(
+	/**
+	 * @param $admin_message
+	 * @param $user_message
+	 * @param $keyword_list
+	 * @param $admin_message_template
+	 * @param $user_message_template
+	 *
+	 * @return array
+	 */
+	private function bot_cat_str_replace_message(
 		$admin_message,
 		$user_message,
 		$keyword_list,
