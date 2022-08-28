@@ -10,13 +10,13 @@ class BotCatTelegramAuthApi {
 	public function register_rest_route(): void {
 		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/telegram/options', [
 			'methods'             => 'POST',
-			'callback'            => [ &$this, 'store_token' ],
+			'callback'            => [ &$this, 'bot_cat_store_token' ],
 			'permission_callback' => '__return_true'
 		] );
 
 		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/telegram/uuid', [
 			'methods'             => 'POST',
-			'callback'            => [ &$this, 'store_uuid' ],
+			'callback'            => [ &$this, 'bot_cat_store_uuid' ],
 			'permission_callback' => '__return_true'
 		] );
 	}
@@ -27,9 +27,9 @@ class BotCatTelegramAuthApi {
 	 * @return void
 	 * @throws JsonException
 	 */
-	public function store_token( $request ): void {
+	public function bot_cat_store_token( $request ): void {
 
-		$can_access = $this->botCatBasicAuthService->check_key( $request );
+		$can_access = $this->botCatBasicAuthService->bot_cat_check_key( $request );
 
 		if ( ! $can_access ) {
 			wp_send_json( [ 'Message' => 'Unauthorized' ], 401 );
@@ -53,15 +53,15 @@ class BotCatTelegramAuthApi {
 	 * @return void
 	 * @throws JsonException
 	 */
-	public function store_uuid( $request ): void {
+	public function bot_cat_store_uuid( $request ): void {
 
-		$can_access = $this->botCatBasicAuthService->check_key( $request );
+		$can_access = $this->botCatBasicAuthService->bot_cat_check_key( $request );
 
 		if ( ! $can_access ) {
 			wp_send_json( [ 'Message' => 'Unauthorized' ], 401 );
 		}
 
-		$user_info = $this->botCatBasicAuthService->get_user_by_token( $request );
+		$user_info = $this->botCatBasicAuthService->bot_cat_get_user_by_token( $request );
 
 		if ( $user_info[0] && isset( $user_info[0]->ID ) ) {
 			update_user_meta( $user_info[0]->ID, BOT_CAT_OPTION_PREFIX . 'telegram_uuid', $request['uuid'] );

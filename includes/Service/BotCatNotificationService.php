@@ -35,11 +35,11 @@ class BotCatNotificationService {
 			return;
 		}
 
-		$uuids = $this->bot_cat_role_service->get_can_receive_post_type_uuids( 'publish_post', $post );
+		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_post_type_uuids( 'publish_post', $post );
 
-		$messages = $this->bot_cat_message_service->generate_post_publish_text( $post );
+		$messages = $this->bot_cat_message_service->bot_cat_generate_post_type_text( 'publish_post', $post );
 
-		$this->send_text_message( $uuids, $messages );
+		$this->bot_cat_send_text_message( $uuids, $messages );
 	}
 
 	/**
@@ -59,11 +59,11 @@ class BotCatNotificationService {
 			return;
 		}
 
-		$uuids = $this->bot_cat_role_service->get_can_receive_post_type_uuids( 'review_post', $post );
+		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_post_type_uuids( 'review_post', $post );
 
-		$messages = $this->bot_cat_message_service->generate_post_review_text( $post );
+		$messages = $this->bot_cat_message_service->bot_cat_generate_post_type_text( 'review_post', $post );
 
-		$this->send_text_message( $uuids, $messages );
+		$this->bot_cat_send_text_message( $uuids, $messages );
 	}
 
 	/**
@@ -75,11 +75,11 @@ class BotCatNotificationService {
 	public function bot_cat_new_comment_alert( $comment_ID ): void {
 		$comment = get_comment( $comment_ID );
 
-		$uuids = $this->bot_cat_role_service->get_can_receive_comment_type_uuids( 'new_comment', $comment );
+		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_comment_type_uuids( 'new_comment', $comment );
 
-		$messages = $this->bot_cat_message_service->generate_new_comment_text( $comment );
+		$messages = $this->bot_cat_message_service->bot_cat_generate_comment_type_text( 'new_comment', $comment );
 
-		$this->send_text_message( $uuids, $messages );
+		$this->bot_cat_send_text_message( $uuids, $messages );
 	}
 
 	/**
@@ -91,11 +91,11 @@ class BotCatNotificationService {
 	public function bot_cat_new_user_alert( $user_ID ): void {
 		$user = get_userdata($user_ID);
 
-		$uuids = $this->bot_cat_role_service->get_can_receive_user_type_uuids( 'new_user', $user );
+		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_user_type_uuids( 'new_user', $user );
 
-		$messages = $this->bot_cat_message_service->generate_new_user_text( $user );
+		$messages = $this->bot_cat_message_service->bot_cat_generate_user_type_text( 'new_user', $user );
 
-		$this->send_text_message( $uuids, $messages );
+		$this->bot_cat_send_text_message( $uuids, $messages );
 	}
 
 	/**
@@ -115,11 +115,13 @@ class BotCatNotificationService {
 			return;
 		}
 
-		$uuids = $this->bot_cat_role_service->get_can_receive_wc_product_type_uuids( 'new_product', $post );
+		$product = wc_get_product( $post->ID );
 
-		$messages = $this->bot_cat_message_service->generate_new_product_text( $post );
+		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_wc_product_type_uuids( 'new_product', $product );
 
-		$this->send_text_message( $uuids, $messages );
+		$messages = $this->bot_cat_message_service->bot_cat_generate_product_type_text( 'new_product', $product );
+
+		$this->bot_cat_send_text_message( $uuids, $messages );
 	}
 
 	/**
@@ -129,11 +131,11 @@ class BotCatNotificationService {
 	 * @throws JsonException
 	 */
 	public function bot_cat_low_stock_alert( $product ): void {
-		$uuids = $this->bot_cat_role_service->get_can_receive_wc_product_type_uuids( 'low_stock', $product );
+		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_wc_product_type_uuids( 'low_stock', $product );
 
-		$messages = $this->bot_cat_message_service->generate_low_stock_text( $product );
+		$messages = $this->bot_cat_message_service->bot_cat_generate_product_type_text( 'low_stock', $product );
 
-		$this->send_text_message( $uuids, $messages );
+		$this->bot_cat_send_text_message( $uuids, $messages );
 	}
 
 	/**
@@ -143,11 +145,11 @@ class BotCatNotificationService {
 	 * @throws JsonException
 	 */
 	public function bot_cat_no_stock_alert( $product ): void {
-		$uuids = $this->bot_cat_role_service->get_can_receive_wc_product_type_uuids( 'no_stock', $product );
+		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_wc_product_type_uuids( 'no_stock', $product );
 
-		$messages = $this->bot_cat_message_service->generate_no_stock_text( $product );
+		$messages = $this->bot_cat_message_service->bot_cat_generate_product_type_text( 'no_stock', $product );
 
-		$this->send_text_message( $uuids, $messages );
+		$this->bot_cat_send_text_message( $uuids, $messages );
 	}
 
 	/**
@@ -159,13 +161,13 @@ class BotCatNotificationService {
 	public function bot_cat_new_order_alert( $order_ID ): void {
 		$order = wc_get_order( $order_ID );
 
-		$uuids = $this->bot_cat_role_service->get_can_receive_wc_order_type_uuids( 'new_order', $order );
+		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_wc_order_type_uuids( 'new_order', $order );
 
-		$messages = $this->bot_cat_message_service->generate_new_order_text( $order );
+		$messages = $this->bot_cat_message_service->bot_cat_generate_order_type_text( 'new_order', $order );
 
-		$this->bot_cat_telegram_service->send_text_message( $uuids['telegram']['admin'], $messages['user'] );
+		$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids['telegram']['admin'], $messages['user'] );
 
-		$this->send_text_message( $uuids, $messages );
+		$this->bot_cat_send_text_message( $uuids, $messages );
 	}
 
 	/**
@@ -175,31 +177,31 @@ class BotCatNotificationService {
 	 * @return void
 	 * @throws JsonException
 	 */
-	private function send_text_message( $uuids, $messages ): void {
+	private function bot_cat_send_text_message( $uuids, $messages ): void {
 		if ( in_array( 'line', $this->enable_service, false ) ) {
 			if (isset($uuids['line']['admin']) && count($uuids['line']['admin']) > 0) {
-				$this->bot_cat_line_service->send_text_message( $uuids['line']['admin'], $messages['admin'] );
+				$this->bot_cat_line_service->bot_cat_send_text_message( $uuids['line']['admin'], $messages['admin'] );
 			}
 			if (isset($uuids['line']['user']) && count($uuids['line']['user']) > 0) {
-				$this->bot_cat_line_service->send_text_message( $uuids['line']['user'], $messages['user'] );
+				$this->bot_cat_line_service->bot_cat_send_text_message( $uuids['line']['user'], $messages['user'] );
 			}
 		}
 
 		if ( in_array( 'line_notify', $this->enable_service, false ) ) {
 			if (isset($uuids['line_notify']['admin']) && count($uuids['line_notify']['admin']) > 0) {
-				$this->bot_cat_line_notify_service->send_text_message( $uuids['line']['admin'], $messages['admin'] );
+				$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids['line']['admin'], $messages['admin'] );
 			}
 			if (isset($uuids['line_notify']['user']) && count($uuids['line_notify']['user']) > 0) {
-				$this->bot_cat_line_notify_service->send_text_message( $uuids['line']['user'], $messages['user'] );
+				$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids['line']['user'], $messages['user'] );
 			}
 		}
 
 		if ( in_array( 'telegram', $this->enable_service, false ) ) {
 			if (isset($uuids['telegram']['admin']) && count($uuids['telegram']['admin']) > 0) {
-				$this->bot_cat_telegram_service->send_text_message( $uuids['line']['admin'], $messages['admin'] );
+				$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids['line']['admin'], $messages['admin'] );
 			}
 			if (isset($uuids['telegram']['user']) && count($uuids['telegram']['user']) > 0) {
-				$this->bot_cat_telegram_service->send_text_message( $uuids['line']['user'], $messages['user'] );
+				$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids['line']['user'], $messages['user'] );
 			}
 		}
 	}

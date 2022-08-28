@@ -14,7 +14,7 @@ class BotCatAdminView
             'BotCat',
             'manage_options',
             'bot-cat',
-            [&$this, 'view'],
+            [&$this, 'bot_cat_view'],
             'dashicons-testimonial',
             '120'
         );
@@ -23,7 +23,7 @@ class BotCatAdminView
     /**
      * @return void
      */
-    public function view(): void
+    public function bot_cat_view(): void
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'basic');
 

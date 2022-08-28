@@ -37,7 +37,7 @@ class BotCatRoleService {
 	 *
 	 * @return array
 	 */
-	public function get_can_receive_post_type_uuids( $action_name ): array {
+	public function bot_cat_get_can_receive_post_type_uuids( $action_name ): array {
 		$uuids = [];
 
 		foreach ( $this->enable_services as $enable_service ) {
@@ -51,8 +51,8 @@ class BotCatRoleService {
 					$user_roles[] = $role;
 				}
 			}
-			$uuids[ $enable_service ]['admin'] = $this->get_uuids_by_role_array( $admin_roles, $enable_service );
-			$uuids[ $enable_service ]['user']  = $this->get_uuids_by_role_array( $user_roles, $enable_service );
+			$uuids[ $enable_service ]['admin'] = $this->bot_cat_get_uuids_by_role_array( $admin_roles, $enable_service );
+			$uuids[ $enable_service ]['user']  = $this->bot_cat_get_uuids_by_role_array( $user_roles, $enable_service );
 		}
 
 		return $uuids;
@@ -65,7 +65,7 @@ class BotCatRoleService {
 	 *
 	 * @return array
 	 */
-	public function get_can_receive_comment_type_uuids( $action_name ): array {
+	public function bot_cat_get_can_receive_comment_type_uuids( $action_name ): array {
 		$uuids = [];
 
 		foreach ( $this->enable_services as $enable_service ) {
@@ -76,7 +76,7 @@ class BotCatRoleService {
 				}
 			}
 
-			$uuids[ $enable_service ]['admin'] = $this->get_uuids_by_role_array( $admin_roles, $enable_service );
+			$uuids[ $enable_service ]['admin'] = $this->bot_cat_get_uuids_by_role_array( $admin_roles, $enable_service );
 
 		}
 
@@ -90,17 +90,17 @@ class BotCatRoleService {
 	 *
 	 * @return array
 	 */
-	public function get_can_receive_user_type_uuids( $action_name ): array {
+	public function bot_cat_get_can_receive_user_type_uuids( $action_name ): array {
 		$uuids = [];
 
 		foreach ( $this->enable_services as $enable_service ) {
 			$admin_roles = [];
+
 			foreach ( $this->options[ $enable_service ][ $action_name ] as $role => $need_send ) {
-				if ( in_array( $role, $this->admin_type_array, true ) ) {
-					$admin_roles[] = $role;
-				}
+				$admin_roles[] = $role;
 			}
-			$uuids[ $enable_service ]['admin'] = $this->get_uuids_by_role_array( $admin_roles, $enable_service );
+
+			$uuids[ $enable_service ]['admin'] = $this->bot_cat_get_uuids_by_role_array( $admin_roles, $enable_service );
 		}
 
 		return $uuids;
@@ -113,7 +113,7 @@ class BotCatRoleService {
 	 *
 	 * @return array
 	 */
-	public function get_can_receive_wc_product_type_uuids( $action_name ): array {
+	public function bot_cat_get_can_receive_wc_product_type_uuids( $action_name ): array {
 		$uuids = [];
 
 		foreach ( $this->enable_services as $enable_service ) {
@@ -128,8 +128,8 @@ class BotCatRoleService {
 				}
 			}
 
-			$uuids[ $enable_service ]['admin'] = $this->get_uuids_by_role_array( $admin_roles, $enable_service );
-			$uuids[ $enable_service ]['user']  = $this->get_uuids_by_role_array( $user_roles, $enable_service );
+			$uuids[ $enable_service ]['admin'] = $this->bot_cat_get_uuids_by_role_array( $admin_roles, $enable_service );
+			$uuids[ $enable_service ]['user']  = $this->bot_cat_get_uuids_by_role_array( $user_roles, $enable_service );
 		}
 
 		return $uuids;
@@ -141,7 +141,7 @@ class BotCatRoleService {
 	 *
 	 * @return array
 	 */
-	public function get_can_receive_wc_order_type_uuids( $action_name, $order ): array {
+	public function bot_cat_get_can_receive_wc_order_type_uuids( $action_name, $order ): array {
 		$uuids = [];
 
 		foreach ( $this->enable_services as $enable_service ) {
@@ -158,7 +158,7 @@ class BotCatRoleService {
 
 			}
 
-			$uuids[ $enable_service ]['admin'] = $this->get_uuids_by_role_array( $admin_roles, $enable_service );
+			$uuids[ $enable_service ]['admin'] = $this->bot_cat_get_uuids_by_role_array( $admin_roles, $enable_service );
 			$uuids[ $enable_service ]['user']  = $uuid ? [$uuid] : [];
 		}
 
@@ -173,7 +173,7 @@ class BotCatRoleService {
 	 *
 	 * @return array
 	 */
-	private function get_uuids_by_role_array( $role_array, $message_type ): array {
+	private function bot_cat_get_uuids_by_role_array( $role_array, $message_type ): array {
 		global $wpdb;
 
 		$uuids = [];

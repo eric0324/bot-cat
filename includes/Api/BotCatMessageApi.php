@@ -10,7 +10,7 @@ class BotCatMessageApi {
 	public function register_rest_route(): void {
 		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/messages', [
 			'methods'             => 'POST',
-			'callback'            => [ &$this, 'store_messages' ],
+			'callback'            => [ &$this, 'bot_cat_store_messages' ],
 			'permission_callback' => '__return_true'
 		] );
 	}
@@ -21,8 +21,8 @@ class BotCatMessageApi {
 	 * @return void
 	 * @throws JsonException
 	 */
-	public function store_messages( $request ): void {
-		$can_access = $this->botCatBasicAuthService->check_key( $request );
+	public function bot_cat_store_messages( $request ): void {
+		$can_access = $this->botCatBasicAuthService->bot_cat_check_key( $request );
 
 		if ( ! $can_access ) {
 			wp_send_json( [ 'Message' => 'Unauthorized' ], 401 );

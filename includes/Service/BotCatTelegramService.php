@@ -12,7 +12,7 @@ class BotCatTelegramService
         $this->send_message_path = '/sendMessage';
     }
 
-    public function send_text_message($to, $message): void
+    public function bot_cat_send_text_message($to, $message): void
     {
 
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'telegram');

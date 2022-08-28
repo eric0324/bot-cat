@@ -11,13 +11,13 @@ class BotCatLineNotifyAdminView
             'LINE Notify',
             'manage_options',
             'bot-cat-line-notify-admin',
-            [&$this, 'view']);
+            [&$this, 'bot_cat_view']);
     }
 
     /**
      * @return void
      */
-    public function view(): void
+    public function bot_cat_view(): void
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'line_notify');
         $serviceOptions = new BotCatNotificationOptions('line_notify');
@@ -47,6 +47,6 @@ class BotCatLineNotifyAdminView
 
         <hr>
         <?php
-        $serviceOptions->init();
+        $serviceOptions->bot_cat_init();
     }
 }

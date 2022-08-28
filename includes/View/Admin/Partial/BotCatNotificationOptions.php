@@ -9,7 +9,7 @@ class BotCatNotificationOptions
         $this->service_name = $service_name;
     }
 
-    public function init(): void
+    public function bot_cat_init(): void
     {
 
         global $wp_roles;
@@ -118,14 +118,14 @@ class BotCatNotificationOptions
                         if ($role_attrs->has_cap('list_users')) {
                             ?>
                             <input
-                                    id="new_users_<?php echo esc_attr($name) ?>"
+                                    id="new_user_<?php echo esc_attr($name) ?>"
                                     type="checkbox"
-                                    name="<?php echo esc_attr(BOT_CAT_OPTION_PREFIX . $this->service_name . "[new_users][$name]") ?>"
+                                    name="<?php echo esc_attr(BOT_CAT_OPTION_PREFIX . $this->service_name . "[new_user][$name]") ?>"
                                     value="1"
-                                <?php if (isset($options['new_users'][$name]))
-                                    echo esc_attr(checked(1, $options['new_users'][$name], false)) ?>
+                                <?php if (isset($options['new_user'][$name]))
+                                    echo esc_attr(checked(1, $options['new_user'][$name], false)) ?>
                             >
-                            <label for="new_users_<?php echo esc_attr($name) ?>"><?php echo translate_user_role($role) ?></label>
+                            <label for="new_user_<?php echo esc_attr($name) ?>"><?php echo translate_user_role($role) ?></label>
                         <?php }
                     } ?>
                 </td>

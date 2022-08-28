@@ -10,13 +10,13 @@ class BotCatTelegramAdminView
             'Telegram',
             'manage_options',
             'bot-cat-telegram-admin',
-            [&$this, 'view']);
+            [&$this, 'bot_cat_view']);
     }
 
     /**
      * @return void
      */
-    public function view(): void
+    public function bot_cat_view(): void
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'telegram');
         $serviceOptions = new BotCatNotificationOptions('telegram');
@@ -65,6 +65,6 @@ class BotCatTelegramAdminView
 
         <hr>
         <?php
-        $serviceOptions->init();
+        $serviceOptions->bot_cat_init();
     }
 }

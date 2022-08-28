@@ -15,7 +15,7 @@ class BotCatProfileView
 	public function bot_cat_extra_user_profile_fields(): void
     {
 		?> <?php
-		    $html = $this->bot_cat_oauth_service->oauth_view();
+		    $html = $this->bot_cat_oauth_service->bot_cat_oauth_view();
 		    echo($html);
 	    ?> <?php
     }

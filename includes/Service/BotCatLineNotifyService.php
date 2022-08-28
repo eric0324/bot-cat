@@ -16,7 +16,7 @@ class BotCatLineNotifyService
      *
      * @return void
      */
-    public function send_text_message($to, $text): void
+    public function bot_cat_send_text_message($to, $text): void
     {
 
         foreach ($to as $uuid) {
