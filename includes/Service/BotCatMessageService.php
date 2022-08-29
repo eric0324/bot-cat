@@ -34,7 +34,7 @@ class BotCatMessageService {
 			__( 'Post type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
-			$this->bot_cat_message['users'][ $action_name ]
+			$this->bot_cat_message['user'][ $action_name ]
 		);
 	}
 
@@ -64,7 +64,7 @@ class BotCatMessageService {
 			__( 'Comment type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
-			$this->bot_cat_message['users'][ $action_name ]
+			$this->bot_cat_message['user'][ $action_name ]
 		);
 	}
 
@@ -90,7 +90,7 @@ class BotCatMessageService {
 			__( 'User type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
-			$this->bot_cat_message['users'][ $action_name ]
+			$this->bot_cat_message['user'][ $action_name ]
 		);
 	}
 
@@ -132,7 +132,7 @@ class BotCatMessageService {
 			__( 'Product type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
-			$this->bot_cat_message['users'][ $action_name ]
+			$this->bot_cat_message['user'][ $action_name ]
 		);
 	}
 
@@ -184,7 +184,7 @@ class BotCatMessageService {
 			__( 'Order type message', 'bot-cat' ),
 			$keyword_text,
 			$this->bot_cat_message['admin'][ $action_name ],
-			$this->bot_cat_message['users'][ $action_name ]
+			$this->bot_cat_message['user'][ $action_name ]
 		);
 	}
 
