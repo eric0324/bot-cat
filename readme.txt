@@ -4,7 +4,7 @@ Tags: notification, WooCommerce, contact form 7, LINE, telegram
 Requires at least: 6.0
 Requires PHP: 7.4
 Tested up to: 6.0
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,6 +50,15 @@ You don't need to write any code, just a few steps to complete the setting.
 We already support common chatbot platforms, and we will support more.
 
 == Changelog ==
+
+= 1.1.3 =
+* Fixed some bugs.
+
+= 1.1.2 =
+* Fixed some bugs.
+
+= 1.1.1 =
+* Fixed some bugs.
 
 = 1.1.0 =
 * Adjust the logic of get user's uuid.
