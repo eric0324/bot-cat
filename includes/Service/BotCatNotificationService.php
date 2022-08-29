@@ -184,11 +184,34 @@ class BotCatNotificationService {
 	private function bot_cat_send_text_message( $uuids, $messages ): void {
 		foreach ($this->enable_service as $service) {
 			if ( in_array( $service, $this->enable_service, false ) ) {
-				if (isset($uuids[$service]['admin']) && count($uuids[$service]['admin']) > 0) {
-					$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[$service]['admin'], $messages['admin'] );
+				if ($service === 'line') {
+					if (isset($uuids[$service]['admin']) && count($uuids[$service]['admin']) > 0) {
+						$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[$service]['admin'], $messages['admin'] );
+					}
+
+					if (isset($uuids[$service]['user']) && count($uuids[$service]['user']) > 0) {
+						$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[$service]['user'], $messages['user'] );
+					}
 				}
-				if (isset($uuids[$service]['user']) && count($uuids[$service]['user']) > 0) {
-					$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[$service]['user'], $messages['user'] );
+
+				if ($service === 'line_notify') {
+					if (isset($uuids[$service]['admin']) && count($uuids[$service]['admin']) > 0) {
+						$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids[$service]['admin'], $messages['admin'] );
+					}
+
+					if (isset($uuids[$service]['user']) && count($uuids[$service]['user']) > 0) {
+						$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids[$service]['user'], $messages['user'] );
+					}
+				}
+				
+				if ($service === 'telegram') {
+					if (isset($uuids[$service]['admin']) && count($uuids[$service]['admin']) > 0) {
+						$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids[$service]['admin'], $messages['admin'] );
+					}
+
+					if (isset($uuids[$service]['user']) && count($uuids[$service]['user']) > 0) {
+						$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids[$service]['user'], $messages['user'] );
+					}
 				}
 			}
 		}
