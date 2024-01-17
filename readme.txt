@@ -51,6 +51,9 @@ We already support common chatbot platforms, and we will support more.
 
 == Changelog ==
 
+= 1.1.4 =
+* Support for WordPress 6.4.
+
 = 1.1.3 =
 * Fixed some bugs.
 
