@@ -3,8 +3,8 @@
  * Plugin Name:       Bot Cat
  * Plugin URI:        https://ericwu.asia/plugins/bot-cat
  * Description:       Simply send chatbot notifications via plugins
- * Requires at least: 5.2
- * Requires PHP:      5.6
+ * Requires at least: 6.4.2
+ * Requires PHP:      8.1
  * Author:            Eric Wu
  * Author URI:        https://ericwu.asia/
  * Version:           1.1.3
