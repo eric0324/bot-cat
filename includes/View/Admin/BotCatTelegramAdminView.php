@@ -19,7 +19,7 @@ class BotCatTelegramAdminView
     public function bot_cat_view(): void
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'telegram');
-        $serviceOptions = new BotCatNotificationOptions('telegram');
+        $serviceOptions = new BotCatTargetOptions('telegram');
 
         ?>
         <div class="wrap">
@@ -65,6 +65,6 @@ class BotCatTelegramAdminView
 
         <hr>
         <?php
-        $serviceOptions->bot_cat_init();
+        $serviceOptions->bot_cat_role_can_receive_message();
     }
 }

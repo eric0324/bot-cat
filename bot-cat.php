@@ -16,18 +16,19 @@ define('BOT_CAT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 const BOT_CAT_OFFICIAL_URL = 'https://bot-cat.com/';
 const BOT_CAT_OPTION_PREFIX = 'bot_cat_';
 const BOT_CAT_REST_NAMESPACE_PREFIX = 'bot-cat';
-const SERVICES = ['line', 'line_notify', 'telegram'];
+const SERVICES = ['line', 'line_notify', 'telegram', 'slack'];
 
 /**
  * Import dependent codes
  */
-require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/Partial/BotCatNotificationOptions.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/Partial/BotCatTargetOptions.php';
 
 require_once BOT_CAT_PLUGIN_DIR . 'includes/View/BotCatProfileView.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatAdminView.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatLineAdminView.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatLineNotifyAdminView.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatTelegramAdminView.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatSlackAdminView.php';
 
 require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatAuthService.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatOAuthService.php';
@@ -52,6 +53,7 @@ register_setting( BOT_CAT_OPTION_PREFIX . 'basic', BOT_CAT_OPTION_PREFIX . 'basi
 register_setting( BOT_CAT_OPTION_PREFIX . 'line_notify', BOT_CAT_OPTION_PREFIX . 'line_notify' );
 register_setting( BOT_CAT_OPTION_PREFIX . 'line', BOT_CAT_OPTION_PREFIX . 'line' );
 register_setting( BOT_CAT_OPTION_PREFIX . 'telegram', BOT_CAT_OPTION_PREFIX . 'telegram' );
+register_setting( BOT_CAT_OPTION_PREFIX . 'slack', BOT_CAT_OPTION_PREFIX . 'slack' );
 
 
 /**
@@ -72,19 +74,20 @@ if (class_exists('WooCommerce')) {
     add_action('woocommerce_edit_account_form', [$bot_cat_profile_view, 'bot_cat_extra_user_profile_fields']);
 }
 
-
 /**
  * Admin Pages
  */
 $bot_cat_admin_view             = new BotCatAdminView();
 $bot_cat_line_admin_view        = new BotCatLineAdminView();
 $bot_cat_line_notify_admin_view = new BotCatLineNotifyAdminView();
-$bot_cat_telegram_admin_view = new BotCatTelegramAdminView();
+$bot_cat_telegram_admin_view    = new BotCatTelegramAdminView();
+$bot_cat_slack_admin_view       = new BotCatSlackAdminView();
 
 add_action( 'admin_menu', [ $bot_cat_admin_view, 'bot_cat_admin' ] );
 add_action( 'admin_menu', [ $bot_cat_line_admin_view, 'bot_cat_line_admin' ] );
 add_action( 'admin_menu', [ $bot_cat_line_notify_admin_view, 'bot_cat_line_notify_admin' ] );
 add_action( 'admin_menu', [ $bot_cat_telegram_admin_view, 'bot_cat_telegram_admin' ] );
+add_action( 'admin_menu', [ $bot_cat_slack_admin_view, 'bot_cat_slack_admin' ] );
 
 
 /**
