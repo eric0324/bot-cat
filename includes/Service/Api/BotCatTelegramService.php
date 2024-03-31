@@ -1,10 +1,14 @@
 <?php
 
+/**
+ * Class BotCatTelegramService
+ * Represents a service for sending text messages through the Telegram Bot API.
+ */
 class BotCatTelegramService
 {
 
-    private $bot_api_url;
-    private $send_message_path;
+	private string $bot_api_url;
+	private string $send_message_path;
 
     public function __construct()
     {
@@ -12,7 +16,15 @@ class BotCatTelegramService
         $this->send_message_path = '/sendMessage';
     }
 
-    public function bot_cat_send_text_message($to, $message): void
+	/**
+	 * Sends a text message to the specified recipients using the Telegram Bot API.
+	 *
+	 * @param array $to An array of recipient UUIDs.
+	 * @param string $message The text message to send.
+	 *
+	 * @return void
+	 */
+	public function bot_cat_send_text_message( array $to, string $message ): void
     {
 
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'telegram');

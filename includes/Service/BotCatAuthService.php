@@ -1,11 +1,18 @@
 <?php
 
+/**
+ * Class BotCatAuthService
+ *
+ * Provides authentication services for the BotCat system.
+ */
 class BotCatAuthService {
 
 	/**
-	 * @param $request
+	 * Check if the provided BOT_CAT_Key matches the configured key.
 	 *
-	 * @return bool
+	 * @param $request object containing the BOT_CAT_Key header.
+	 *
+	 * @return bool Returns true if the provided key matches the configured key, false otherwise.
 	 * @throws JsonException
 	 */
 	public function bot_cat_check_key( $request ): bool {
@@ -21,9 +28,11 @@ class BotCatAuthService {
 	}
 
 	/**
-	 * @param $request
+	 * Retrieves the user with the given token.
 	 *
-	 * @return array
+	 * @param array $request The request data, containing the user token.
+	 *
+	 * @return array An array of user objects matching the given token.
 	 */
 	public function bot_cat_get_user_by_token( $request ): array {
 		return get_users( [

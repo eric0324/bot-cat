@@ -1,7 +1,17 @@
 <?php
 
+/**
+ * Class BotCatTelegramAdminView
+ *
+ * Handles the administration view for Bot Cat Telegram settings.
+ */
 class BotCatTelegramAdminView
 {
+	/**
+	 * Registers the Telegram admin submenu page.
+	 *
+	 * @return void
+	 */
     public function bot_cat_telegram_admin(): void
     {
         add_submenu_page(
@@ -13,9 +23,11 @@ class BotCatTelegramAdminView
             [&$this, 'bot_cat_view']);
     }
 
-    /**
-     * @return void
-     */
+	/**
+	 * Display the view for the Bot Cat Telegram settings.
+	 *
+	 * @return void
+	 */
     public function bot_cat_view(): void
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'telegram');

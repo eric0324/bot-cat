@@ -1,22 +1,27 @@
 <?php
 
+/**
+ * This class provides functionality to send text messages using the Line Notify API.
+ */
 class BotCatLineNotifyService
 {
 
-    private $notify_url;
+	private string $notify_url;
 
     public function __construct()
     {
         $this->notify_url = "https://notify-api.line.me/api/";
     }
 
-    /**
-     * @param $to
-     * @param $text
-     *
-     * @return void
-     */
-    public function bot_cat_send_text_message($to, $text): void
+	/**
+	 * Sends a text message to one or more recipients.
+	 *
+	 * @param array $to An array of recipient UUIDs.
+	 * @param string $text The text message to be sent.
+	 *
+	 * @return void
+	 */
+	public function bot_cat_send_text_message( array $to, string $text ): void
     {
 
         foreach ($to as $uuid) {

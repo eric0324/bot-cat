@@ -18,9 +18,6 @@ const BOT_CAT_OPTION_PREFIX = 'bot_cat_';
 const BOT_CAT_REST_NAMESPACE_PREFIX = 'bot-cat';
 const SERVICES = ['line', 'line_notify', 'telegram', 'slack'];
 
-/**
- * Import dependent codes
- */
 require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/Partial/BotCatTargetOptions.php';
 
 require_once BOT_CAT_PLUGIN_DIR . 'includes/View/BotCatProfileView.php';
@@ -32,9 +29,12 @@ require_once BOT_CAT_PLUGIN_DIR . 'includes/View/Admin/BotCatSlackAdminView.php'
 
 require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatAuthService.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatOAuthService.php';
-require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatLineNotifyService.php';
-require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatLineService.php';
-require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatTelegramService.php';
+
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/Api/BotCatLineNotifyService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/Api/BotCatLineService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/Api/BotCatTelegramService.php';
+require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/Api/BotCatSlackService.php';
+
 require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatMessageService.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatNotificationService.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/Service/BotCatRoleService.php';
@@ -46,9 +46,7 @@ require_once BOT_CAT_PLUGIN_DIR . 'includes/Api/BotCatLineNotifyAuthApi.php';
 require_once BOT_CAT_PLUGIN_DIR . 'includes/Api/BotCatTelegramAuthApi.php';
 
 
-/**
- * Registration Options Group
- */
+
 register_setting( BOT_CAT_OPTION_PREFIX . 'basic', BOT_CAT_OPTION_PREFIX . 'basic' );
 register_setting( BOT_CAT_OPTION_PREFIX . 'line_notify', BOT_CAT_OPTION_PREFIX . 'line_notify' );
 register_setting( BOT_CAT_OPTION_PREFIX . 'line', BOT_CAT_OPTION_PREFIX . 'line' );
@@ -57,14 +55,23 @@ register_setting( BOT_CAT_OPTION_PREFIX . 'slack', BOT_CAT_OPTION_PREFIX . 'slac
 
 
 /**
- * Shortcode
+ * Shortcode Service
+ *
+ * This class provides functionality for handling shortcodes.
+ * Shortcodes are snippets of code that can be used within posts, pages, or widgets
+ * to perform specific tasks or generate dynamic content.
+ *
+ * @package YourPackage
  */
 $shortcode_service = new BotCatShortcodeService();
 
 add_action('init', [$shortcode_service, 'register_shortcodes']);
 
+
 /**
- * Profile page
+ * Represents the profile view of a bot cat.
+ *
+ * This variable is used to store the number of profile views for a bot cat.
  */
 $bot_cat_profile_view = new BotCatProfileView();
 
@@ -74,8 +81,11 @@ if (class_exists('WooCommerce')) {
     add_action('woocommerce_edit_account_form', [$bot_cat_profile_view, 'bot_cat_extra_user_profile_fields']);
 }
 
+
 /**
- * Admin Pages
+ * Represents the view for admin functionalities related to the bot categories.
+ *
+ * This view is responsible for displaying and managing bot categories in the admin area.
  */
 $bot_cat_admin_view             = new BotCatAdminView();
 $bot_cat_line_admin_view        = new BotCatLineAdminView();
@@ -91,7 +101,10 @@ add_action( 'admin_menu', [ $bot_cat_slack_admin_view, 'bot_cat_slack_admin' ] )
 
 
 /**
- * APIs
+ * This variable represents the Bot Cat Line Authentication API.
+ *
+ * The Bot Cat Line Authentication API is responsible for handling authentication requests
+ * and providing authorization for accessing the Line Messaging API.
  */
 $bot_cat_line_auth_api        = new BotCatLineAuthApi();
 $bot_cat_line_notify_auth_api = new BotCatLineNotifyAuthApi();
@@ -104,7 +117,10 @@ add_action( 'rest_api_init', [ $bot_cat_message_api , 'register_rest_route' ] );
 
 
 /**
- * Notification
+ * The Bot Cat Notification Service.
+ *
+ * This class represents a bot cat notification service that is responsible for sending
+ * notifications to bot cats. It provides various methods to interact with the service.
  */
 $bot_cat_notification_service = new BotCatNotificationService();
 

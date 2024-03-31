@@ -1,12 +1,17 @@
 <?php
 
+/**
+ * Class BotCatAdminView
+ *
+ * This class represents the admin view for the BotCat plugin.
+ */
 class BotCatAdminView
 {
-    public function __construct()
-    {
-
-    }
-
+	/**
+	 * Registers the BotCat admin menu page.
+	 *
+	 * @return void
+	 */
     public function bot_cat_admin(): void
     {
         add_menu_page(
@@ -20,9 +25,12 @@ class BotCatAdminView
         );
     }
 
-    /**
-     * @return void
-     */
+	/**
+	 * Displays the BotCat admin settings page.
+	 *
+	 * @return void
+	 *
+	 */
     public function bot_cat_view(): void
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'basic');

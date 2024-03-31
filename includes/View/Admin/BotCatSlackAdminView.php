@@ -1,7 +1,17 @@
 <?php
 
+/**
+ * Class BotCatSlackAdminView
+ *
+ * Provides the Slack admin view in the Bot Cat plugin settings.
+ */
 class BotCatSlackAdminView
 {
+	/**
+	 * Displays the Slack admin page in the Bot Cat plugin settings.
+	 *
+	 * @return void
+	 */
     public function bot_cat_slack_admin(): void
     {
         add_submenu_page(
@@ -13,9 +23,11 @@ class BotCatSlackAdminView
             [&$this, 'bot_cat_view']);
     }
 
-    /**
-     * @return void
-     */
+	/**
+	 * Displays the Slack settings form and handles submission of the form.
+	 *
+	 * @return void
+	 */
     public function bot_cat_view(): void
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'slack');

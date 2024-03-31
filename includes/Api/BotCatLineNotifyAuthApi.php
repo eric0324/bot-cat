@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * Class BotCatLineNotifyAuthApi
+ *
+ * This class is responsible for handling Line Notify authentication for BotCat.
+ */
+
 class BotCatLineNotifyAuthApi {
-	private $botCatBasicAuthService;
+	private BotCatAuthService $botCatBasicAuthService;
 
 	public function __construct() {
 		$this->botCatBasicAuthService = new BotCatAuthService();
@@ -17,7 +23,9 @@ class BotCatLineNotifyAuthApi {
 	}
 
 	/**
-	 * @param $request
+	 * Stores a UUID for a user.
+	 *
+	 * @param array $request The request data, including the UUID.
 	 *
 	 * @return void
 	 * @throws JsonException

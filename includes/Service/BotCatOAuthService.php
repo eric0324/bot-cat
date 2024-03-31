@@ -1,6 +1,16 @@
 <?php
 
+/**
+ * Class BotCatOAuthService
+ *
+ * This class provides functionality for handling OAuth service integrations for BotCat.
+ */
 class BotCatOAuthService {
+	/**
+	 * Generate HTML view for the bot cat OAuth buttons.
+	 *
+	 * @return string The HTML view for the OAuth buttons.
+	 */
 	public function bot_cat_oauth_view(): string {
 		$user_info = wp_get_current_user();
 

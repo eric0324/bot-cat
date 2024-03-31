@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * Class BotCatLineAuthApi
+ *
+ * This class provides functionality related to LINE authentication for the BotCat plugin.
+ */
+
 class BotCatLineAuthApi {
-	private $botCatBasicAuthService;
+	private BotCatAuthService $botCatBasicAuthService;
 
 	public function __construct() {
 		$this->botCatBasicAuthService = new BotCatAuthService();
@@ -47,7 +53,9 @@ class BotCatLineAuthApi {
 	}
 
 	/**
-	 * @param $request
+	 * Store UUID for a specific user.
+	 *
+	 * @param mixed $request The request object containing the UUID.
 	 *
 	 * @return void
 	 * @throws JsonException

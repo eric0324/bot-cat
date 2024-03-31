@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * Class BotCatMessageService
+ *
+ * This class is responsible for generating various types of messages for different actions.
+ */
 class BotCatMessageService {
 
-	private $bot_cat_message;
+	private mixed $bot_cat_message;
 
 	public function __construct() {
 		$this->bot_cat_message = get_option( BOT_CAT_OPTION_PREFIX . 'messages' );
@@ -11,12 +16,12 @@ class BotCatMessageService {
 	/**
 	 * Generate post type text
 	 *
-	 * @param $action_name
-	 * @param $post
+	 * @param string $action_name The action name.
+	 * @param WP_Post $post The post object.
 	 *
-	 * @return array
+	 * @return array The generated post type text.
 	 */
-	public function bot_cat_generate_post_type_text( $action_name, $post ): array {
+	public function bot_cat_generate_post_type_text( string $action_name, WP_Post $post ): array {
 
 		$userdata = get_userdata( $post->post_author );
 
@@ -41,12 +46,12 @@ class BotCatMessageService {
 	/**
 	 * Generate comment type text
 	 *
-	 * @param $action_name
-	 * @param $comment
+	 * @param string $action_name The action name.
+	 * @param object $comment The comment object.
 	 *
-	 * @return array
+	 * @return array An array of keyword text replacements.
 	 */
-	public function bot_cat_generate_comment_type_text( $action_name, $comment ): array {
+	public function bot_cat_generate_comment_type_text( string $action_name, object $comment ): array {
 
 		$userdata = get_userdata( $comment->user_id );
 
@@ -71,12 +76,12 @@ class BotCatMessageService {
 	/**
 	 * Generate user type text
 	 *
-	 * @param $action_name
-	 * @param $user
+	 * @param string $action_name The name of the action
+	 * @param object $user The user object
 	 *
-	 * @return array
+	 * @return array The generated user type text
 	 */
-	public function bot_cat_generate_user_type_text( $action_name, $user ): array {
+	public function bot_cat_generate_user_type_text( string $action_name, object $user ): array {
 		$keyword_text = [
 			'[username]'        => $user->user_nicename,
 			'[name]'            => $user->display_name,
@@ -95,14 +100,14 @@ class BotCatMessageService {
 	}
 
 	/**
-	 * Generate product type text
+	 * Generate product type text.
 	 *
-	 * @param $action_name
-	 * @param $product
+	 * @param string $action_name The name of the action.
+	 * @param object $product The product object.
 	 *
-	 * @return array
+	 * @return array An array containing the generated product type text.
 	 */
-	public function bot_cat_generate_product_type_text( $action_name, $product ): array {
+	public function bot_cat_generate_product_type_text( string $action_name, object $product ): array {
 		$keyword_text = [
 			'[name]'              => $product->get_name(),
 			'[date_created]'      => $product->post_date,
@@ -137,14 +142,14 @@ class BotCatMessageService {
 	}
 
 	/**
-	 * Generate order type text
+	 * Generates the text for the order type message.
 	 *
-	 * @param $action_name
-	 * @param $order
+	 * @param string $action_name The name of the action.
+	 * @param object $order The order object.
 	 *
-	 * @return array
+	 * @return array The generated order type text.
 	 */
-	public function bot_cat_generate_order_type_text( $action_name, $order ): array {
+	public function bot_cat_generate_order_type_text( string $action_name, object $order ): array {
 		$keyword_text = [
 			'[total]'               => $order->get_total(),
 			'[payment_method]'      => $order->get_payment_method(),
@@ -174,7 +179,7 @@ class BotCatMessageService {
 		];
 
 		$item_string = '';
-		foreach ( $order->get_items() as $item_id => $item ) {
+		foreach ( $order->get_items() as $item ) {
 			$item_string .= ($item->get_name() . ' ');
 		}
 		$keyword_text['[order_product]'] = $item_string;
@@ -189,20 +194,22 @@ class BotCatMessageService {
 	}
 
 	/**
-	 * @param $admin_message
-	 * @param $user_message
-	 * @param $keyword_list
-	 * @param $admin_message_template
-	 * @param $user_message_template
+	 * Replaces keywords in the admin and user messages with corresponding values from the keyword list.
 	 *
-	 * @return array
+	 * @param string $admin_message The admin message to replace keywords in.
+	 * @param string $user_message The user message to replace keywords in.
+	 * @param array $keyword_list The list of keywords and their corresponding values.
+	 * @param string|null $admin_message_template The admin message template that contains keywords to be replaced.
+	 * @param string|null $user_message_template The user message template that contains keywords to be replaced.
+	 *
+	 * @return array The admin and user messages with replaced keywords.
 	 */
 	private function bot_cat_str_replace_message(
-		$admin_message,
-		$user_message,
-		$keyword_list,
-		$admin_message_template,
-		$user_message_template
+		string $admin_message,
+		string $user_message,
+		array $keyword_list,
+		?string $admin_message_template,
+		?string $user_message_template
 	): array {
 		if ( $admin_message_template ) {
 			$admin_message = str_ireplace( array_keys( $keyword_list ), $keyword_list, $admin_message_template );

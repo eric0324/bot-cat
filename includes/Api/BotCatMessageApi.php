@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * Class BotCatMessageApi.
+ *
+ * This class provides functionality for storing messages in the bot_cat_messages option.
+ */
+
 class BotCatMessageApi {
-	private $botCatBasicAuthService;
+	private BotCatAuthService $botCatBasicAuthService;
 
 	public function __construct() {
 		$this->botCatBasicAuthService = new BotCatAuthService();
@@ -16,7 +22,9 @@ class BotCatMessageApi {
 	}
 
 	/**
-	 * @param $request
+	 * Stores messages in the bot_cat_messages option.
+	 *
+	 * @param array $request The request data containing messages.
 	 *
 	 * @return void
 	 * @throws JsonException

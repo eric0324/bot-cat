@@ -1,20 +1,30 @@
 <?php
 
+/**
+ * Class BotCatLineService
+ *
+ * This class is responsible for sending text messages to the LINE messaging platform.
+ */
 class BotCatLineService
 {
 
-    private $multicast_message_url;
+	private string $multicast_message_url;
 
     public function __construct()
     {
         $this->multicast_message_url = 'https://api.line.me/v2/bot/message/multicast';
     }
 
-    /**
-     * @throws JsonException
-     */
-    public function bot_cat_send_text_message($to, $message)
-    {
+	/**
+	 * Sends a text message through the LINE Messaging API.
+	 *
+	 * @param string $to The ID of the recipient.
+	 * @param string $message The text message to send.
+	 *
+	 * @return void The decoded JSON response from the API.
+	 * @throws JsonException
+	 */
+	public function bot_cat_send_text_message( string $to, string $message ): void {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'line');
 
         $response = wp_remote_post($this->multicast_message_url,
@@ -39,6 +49,6 @@ class BotCatLineService
 
         $json = $response['body'] ?? [];
 
-        return json_decode($json, false, 512, JSON_THROW_ON_ERROR);
+		json_decode( $json, false, 512, JSON_THROW_ON_ERROR );
     }
 }

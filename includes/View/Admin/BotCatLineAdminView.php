@@ -1,8 +1,18 @@
 <?php
 
+/**
+ * Class BotCatLineAdminView
+ *
+ * Represents the LINE admin view for the Bot Cat plugin.
+ */
 class BotCatLineAdminView
 {
 
+	/**
+	 * Registers the LINE admin page under the Bot Cat plugin submenu.
+	 *
+	 * @return void
+	 */
     public function bot_cat_line_admin(): void
     {
         add_submenu_page(
@@ -14,9 +24,11 @@ class BotCatLineAdminView
             [&$this, 'bot_cat_view']);
     }
 
-    /**
-     * @return void
-     */
+	/**
+	 * Display the view for LINE settings in the Bot Cat plugin.
+	 *
+	 * @return void
+	 */
     public function bot_cat_view(): void
     {
         $options = get_option(BOT_CAT_OPTION_PREFIX . 'line');

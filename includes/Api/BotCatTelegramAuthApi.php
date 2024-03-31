@@ -1,12 +1,23 @@
 <?php
 
+/**
+ * Class BotCatTelegramAuthApi
+ *
+ * This class is responsible for registering REST routes and storing API token, chat ID, and UUID for the Telegram bot.
+ */
+
 class BotCatTelegramAuthApi {
-	private $botCatBasicAuthService;
+	private BotCatAuthService $botCatBasicAuthService;
 
 	public function __construct() {
 		$this->botCatBasicAuthService = new BotCatAuthService();
 	}
 
+	/**
+	 * Register the REST routes for the BOT_CAT plugin.
+	 *
+	 * @return void
+	 */
 	public function register_rest_route(): void {
 		register_rest_route( BOT_CAT_REST_NAMESPACE_PREFIX, '/telegram/options', [
 			'methods'             => 'POST',
@@ -22,7 +33,9 @@ class BotCatTelegramAuthApi {
 	}
 
 	/**
-	 * @param $request
+	 * Store the API token and chat ID for the Telegram bot.
+	 *
+	 * @param array $request The request data containing the API token and chat ID.
 	 *
 	 * @return void
 	 * @throws JsonException
@@ -48,7 +61,9 @@ class BotCatTelegramAuthApi {
 	}
 
 	/**
-	 * @param $request
+	 * Store the UUID for a user.
+	 *
+	 * @param array $request The request data containing the UUID.
 	 *
 	 * @return void
 	 * @throws JsonException
