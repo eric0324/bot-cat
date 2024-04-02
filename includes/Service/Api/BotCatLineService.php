@@ -5,15 +5,13 @@
  *
  * This class is responsible for sending text messages to the LINE messaging platform.
  */
-class BotCatLineService
-{
+class BotCatLineService {
 
 	private string $multicast_message_url;
 
-    public function __construct()
-    {
-        $this->multicast_message_url = 'https://api.line.me/v2/bot/message/multicast';
-    }
+	public function __construct() {
+		$this->multicast_message_url = 'https://api.line.me/v2/bot/message/multicast';
+	}
 
 	/**
 	 * Sends a text message through the LINE Messaging API.
@@ -25,30 +23,30 @@ class BotCatLineService
 	 * @throws JsonException
 	 */
 	public function bot_cat_send_text_message( string $to, string $message ): void {
-        $options = get_option(BOT_CAT_OPTION_PREFIX . 'line');
+		$options = get_option( BOT_CAT_OPTION_PREFIX . 'line' );
 
-        $response = wp_remote_post($this->multicast_message_url,
-            [
-                'method' => 'POST',
-                'headers' => [
-                    'Content-Type' => 'application/json; charset=utf-8',
-                    'Authorization' => 'Bearer ' . $options['channel_access_token']
-                ],
-                'data_format' => 'body',
-                'body' => json_encode([
-                    'to' => $to,
-                    'messages' => [
-                        0 => [
-                            'type' => 'text',
-                            'text' => $message
-                        ]
-                    ]
-                ], JSON_THROW_ON_ERROR)
-            ],
-        );
+		$response = wp_remote_post( $this->multicast_message_url,
+			[
+				'method'      => 'POST',
+				'headers'     => [
+					'Content-Type'  => 'application/json; charset=utf-8',
+					'Authorization' => 'Bearer ' . $options['channel_access_token']
+				],
+				'data_format' => 'body',
+				'body'        => json_encode( [
+					'to'       => $to,
+					'messages' => [
+						0 => [
+							'type' => 'text',
+							'text' => $message
+						]
+					]
+				], JSON_THROW_ON_ERROR )
+			],
+		);
 
-        $json = $response['body'] ?? [];
+		$json = $response['body'] ?? [];
 
 		json_decode( $json, false, 512, JSON_THROW_ON_ERROR );
-    }
+	}
 }

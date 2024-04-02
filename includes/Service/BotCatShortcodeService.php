@@ -11,7 +11,7 @@ class BotCatShortcodeService {
 	 * @return void
 	 */
 	public function register_shortcodes(): void {
-		add_shortcode('bot-cat-oauth', [&$this, 'bot_cat_oauth_button_list' ]);
+		add_shortcode( 'bot-cat-oauth', [ &$this, 'bot_cat_oauth_button_list' ] );
 	}
 
 	/**

@@ -2,9 +2,9 @@
 Contributors: eric0324
 Tags: notification, WooCommerce, contact form 7, LINE, telegram
 Requires at least: 6.0
-Requires PHP: 7.4
+Requires PHP: 8.2
 Tested up to: 6.0
-Stable tag: 1.1.3
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

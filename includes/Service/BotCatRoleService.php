@@ -66,6 +66,45 @@ class BotCatRoleService {
 	}
 
 	/**
+	 * Get the UUIDs for the given role array and message type
+	 *
+	 * @param array $role_array An array containing the roles
+	 * @param string $message_type The type of the message
+	 *
+	 * @return array An array containing the UUIDs for the given roles and message type
+	 */
+	private function bot_cat_get_uuids_by_role_array( array $role_array, string $message_type ): array {
+		global $wpdb;
+
+		$uuids = [];
+
+		if ( count( $role_array ) === 0 ) {
+			return $uuids;
+		}
+
+		$user_array = get_users( [ 'role__in' => $role_array ] );
+
+		$ids = [];
+		foreach ( $user_array as $user ) {
+			$ids[] = $user->ID;
+		}
+
+		$in_str_arr = array_fill( 0, count( $ids ), '%s' );
+		$in_str     = implode( ',', $in_str_arr );
+
+		$sql = "SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = '" . BOT_CAT_OPTION_PREFIX . $message_type . "_uuid' AND user_id IN ($in_str);";
+
+		$sql       = $wpdb->prepare( $sql, $ids );
+		$sql_uuids = $wpdb->get_results( $sql );
+
+		foreach ( $sql_uuids as $sql_uuid ) {
+			$uuids[] = $sql_uuid->meta_value;
+		}
+
+		return $uuids;
+	}
+
+	/**
 	 * Get the UUIDs of the comment types that can receive the specified action.
 	 *
 	 * @param string $action_name the name of the action.
@@ -166,46 +205,7 @@ class BotCatRoleService {
 			}
 
 			$uuids[ $enable_service ]['admin'] = $this->bot_cat_get_uuids_by_role_array( $admin_roles, $enable_service );
-			$uuids[ $enable_service ]['user']  = $uuid ? [$uuid] : [];
-		}
-
-		return $uuids;
-	}
-
-	/**
-	 * Get the UUIDs for the given role array and message type
-	 *
-	 * @param array $role_array An array containing the roles
-	 * @param string $message_type The type of the message
-	 *
-	 * @return array An array containing the UUIDs for the given roles and message type
-	 */
-	private function bot_cat_get_uuids_by_role_array( array $role_array, string $message_type ): array {
-		global $wpdb;
-
-		$uuids = [];
-
-		if ( count( $role_array ) === 0 ) {
-			return $uuids;
-		}
-
-		$user_array = get_users( [ 'role__in' => $role_array ] );
-
-		$ids = [];
-		foreach ( $user_array as $user ) {
-			$ids[] = $user->ID;
-		}
-
-		$in_str_arr = array_fill( 0, count( $ids ), '%s' );
-		$in_str     = implode( ',', $in_str_arr );
-
-		$sql = "SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = '" . BOT_CAT_OPTION_PREFIX . $message_type . "_uuid' AND user_id IN ($in_str);";
-
-		$sql       = $wpdb->prepare( $sql, $ids );
-		$sql_uuids = $wpdb->get_results( $sql );
-
-		foreach ( $sql_uuids as $sql_uuid ) {
-			$uuids[] = $sql_uuid->meta_value;
+			$uuids[ $enable_service ]['user']  = $uuid ? [ $uuid ] : [];
 		}
 
 		return $uuids;

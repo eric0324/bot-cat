@@ -44,6 +44,38 @@ class BotCatMessageService {
 	}
 
 	/**
+	 * Replaces keywords in the admin and user messages with corresponding values from the keyword list.
+	 *
+	 * @param string $admin_message The admin message to replace keywords in.
+	 * @param string $user_message The user message to replace keywords in.
+	 * @param array $keyword_list The list of keywords and their corresponding values.
+	 * @param string|null $admin_message_template The admin message template that contains keywords to be replaced.
+	 * @param string|null $user_message_template The user message template that contains keywords to be replaced.
+	 *
+	 * @return array The admin and user messages with replaced keywords.
+	 */
+	private function bot_cat_str_replace_message(
+		string $admin_message,
+		string $user_message,
+		array $keyword_list,
+		?string $admin_message_template,
+		?string $user_message_template
+	): array {
+		if ( $admin_message_template ) {
+			$admin_message = str_ireplace( array_keys( $keyword_list ), $keyword_list, $admin_message_template );
+		}
+
+		if ( $user_message_template ) {
+			$user_message = str_ireplace( array_keys( $keyword_list ), $keyword_list, $user_message_template );
+		}
+
+		return [
+			'admin' => $admin_message,
+			'user'  => $user_message
+		];
+	}
+
+	/**
 	 * Generate comment type text
 	 *
 	 * @param string $action_name The action name.
@@ -180,7 +212,7 @@ class BotCatMessageService {
 
 		$item_string = '';
 		foreach ( $order->get_items() as $item ) {
-			$item_string .= ($item->get_name() . ' ');
+			$item_string .= ( $item->get_name() . ' ' );
 		}
 		$keyword_text['[order_product]'] = $item_string;
 
@@ -191,37 +223,5 @@ class BotCatMessageService {
 			$this->bot_cat_message['admin'][ $action_name ],
 			$this->bot_cat_message['user'][ $action_name ]
 		);
-	}
-
-	/**
-	 * Replaces keywords in the admin and user messages with corresponding values from the keyword list.
-	 *
-	 * @param string $admin_message The admin message to replace keywords in.
-	 * @param string $user_message The user message to replace keywords in.
-	 * @param array $keyword_list The list of keywords and their corresponding values.
-	 * @param string|null $admin_message_template The admin message template that contains keywords to be replaced.
-	 * @param string|null $user_message_template The user message template that contains keywords to be replaced.
-	 *
-	 * @return array The admin and user messages with replaced keywords.
-	 */
-	private function bot_cat_str_replace_message(
-		string $admin_message,
-		string $user_message,
-		array $keyword_list,
-		?string $admin_message_template,
-		?string $user_message_template
-	): array {
-		if ( $admin_message_template ) {
-			$admin_message = str_ireplace( array_keys( $keyword_list ), $keyword_list, $admin_message_template );
-		}
-
-		if ( $user_message_template ) {
-			$user_message = str_ireplace( array_keys( $keyword_list ), $keyword_list, $user_message_template );
-		}
-
-		return [
-			'admin' => $admin_message,
-			'user'  => $user_message
-		];
 	}
 }

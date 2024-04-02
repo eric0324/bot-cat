@@ -22,7 +22,7 @@ class BotCatNotificationService {
 		$this->bot_cat_line_service        = new BotCatLineService();
 		$this->bot_cat_line_notify_service = new BotCatLineNotifyService();
 		$this->bot_cat_telegram_service    = new BotCatTelegramService();
-		$this->bot_cat_slack_service = new BotCatSlackService();
+		$this->bot_cat_slack_service       = new BotCatSlackService();
 	}
 
 	/**
@@ -49,6 +49,51 @@ class BotCatNotificationService {
 		$messages = $this->bot_cat_message_service->bot_cat_generate_post_type_text( 'publish_post', $post );
 
 		$this->bot_cat_send_text_message( $uuids, $messages );
+	}
+
+	/**
+	 * Sends a text message to the users who can receive it through various services.
+	 *
+	 * @param array $uuids The UUIDs of the users who can receive the message for each service.
+	 * @param array $messages The messages to be sent for each service.
+	 *
+	 * @return void
+	 * @throws JsonException
+	 */
+	private function bot_cat_send_text_message( array $uuids, array $messages ): void {
+		foreach ( $this->enable_service as $service ) {
+			if ( in_array( $service, $this->enable_service, false ) ) {
+				if ( $service === 'line' ) {
+					if ( isset( $uuids[ $service ]['admin'] ) && count( $uuids[ $service ]['admin'] ) > 0 ) {
+						$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[ $service ]['admin'], $messages['admin'] );
+					}
+
+					if ( isset( $uuids[ $service ]['user'] ) && count( $uuids[ $service ]['user'] ) > 0 ) {
+						$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[ $service ]['user'], $messages['user'] );
+					}
+				}
+
+				if ( $service === 'line_notify' ) {
+					if ( isset( $uuids[ $service ]['admin'] ) && count( $uuids[ $service ]['admin'] ) > 0 ) {
+						$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids[ $service ]['admin'], $messages['admin'] );
+					}
+
+					if ( isset( $uuids[ $service ]['user'] ) && count( $uuids[ $service ]['user'] ) > 0 ) {
+						$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids[ $service ]['user'], $messages['user'] );
+					}
+				}
+
+				if ( $service === 'telegram' ) {
+					if ( isset( $uuids[ $service ]['admin'] ) && count( $uuids[ $service ]['admin'] ) > 0 ) {
+						$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids[ $service ]['admin'], $messages['admin'] );
+					}
+
+					if ( isset( $uuids[ $service ]['user'] ) && count( $uuids[ $service ]['user'] ) > 0 ) {
+						$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids[ $service ]['user'], $messages['user'] );
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -104,7 +149,7 @@ class BotCatNotificationService {
 	 * @throws JsonException
 	 */
 	public function bot_cat_new_user_alert( int $user_ID ): void {
-		$user = get_userdata($user_ID);
+		$user = get_userdata( $user_ID );
 
 		$uuids = $this->bot_cat_role_service->bot_cat_get_can_receive_user_type_uuids( 'new_user', $user );
 
@@ -195,50 +240,5 @@ class BotCatNotificationService {
 		$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids['telegram']['admin'], $messages['user'] );
 
 		$this->bot_cat_send_text_message( $uuids, $messages );
-	}
-
-	/**
-	 * Sends a text message to the users who can receive it through various services.
-	 *
-	 * @param array $uuids The UUIDs of the users who can receive the message for each service.
-	 * @param array $messages The messages to be sent for each service.
-	 *
-	 * @return void
-	 * @throws JsonException
-	 */
-	private function bot_cat_send_text_message( array $uuids, array $messages ): void {
-		foreach ($this->enable_service as $service) {
-			if ( in_array( $service, $this->enable_service, false ) ) {
-				if ($service === 'line') {
-					if (isset($uuids[$service]['admin']) && count($uuids[$service]['admin']) > 0) {
-						$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[$service]['admin'], $messages['admin'] );
-					}
-
-					if (isset($uuids[$service]['user']) && count($uuids[$service]['user']) > 0) {
-						$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[$service]['user'], $messages['user'] );
-					}
-				}
-
-				if ($service === 'line_notify') {
-					if (isset($uuids[$service]['admin']) && count($uuids[$service]['admin']) > 0) {
-						$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids[$service]['admin'], $messages['admin'] );
-					}
-
-					if (isset($uuids[$service]['user']) && count($uuids[$service]['user']) > 0) {
-						$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids[$service]['user'], $messages['user'] );
-					}
-				}
-				
-				if ($service === 'telegram') {
-					if (isset($uuids[$service]['admin']) && count($uuids[$service]['admin']) > 0) {
-						$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids[$service]['admin'], $messages['admin'] );
-					}
-
-					if (isset($uuids[$service]['user']) && count($uuids[$service]['user']) > 0) {
-						$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids[$service]['user'], $messages['user'] );
-					}
-				}
-			}
-		}
 	}
 }

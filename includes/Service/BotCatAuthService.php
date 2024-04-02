@@ -20,7 +20,7 @@ class BotCatAuthService {
 
 		$BOT_CAT_key = json_encode( $request->get_header( 'BOT_CAT_Key' ), JSON_THROW_ON_ERROR );
 
-		if (!$options['key']) {
+		if ( ! $options['key'] ) {
 			return false;
 		}
 

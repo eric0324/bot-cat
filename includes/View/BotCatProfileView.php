@@ -5,12 +5,10 @@
  *
  * A class for displaying extra fields for the user profile with Bot Cat integration.
  */
-class BotCatProfileView
-{
+class BotCatProfileView {
 	private BotCatOAuthService $bot_cat_oauth_service;
 
-	public function __construct()
-	{
+	public function __construct() {
 		$this->bot_cat_oauth_service = new BotCatOAuthService();
 	}
 
@@ -22,11 +20,10 @@ class BotCatProfileView
 	 *
 	 * @return void
 	 */
-	public function bot_cat_extra_user_profile_fields(): void
-    {
-		?> <?php
-		    $html = $this->bot_cat_oauth_service->bot_cat_oauth_view();
-		    echo($html);
-	    ?> <?php
-    }
+	public function bot_cat_extra_user_profile_fields(): void {
+		?><?php
+		$html = $this->bot_cat_oauth_service->bot_cat_oauth_view();
+		echo( $html );
+		?><?php
+	}
 }
