@@ -10,6 +10,9 @@ use JsonException;
  *
  * This class provides functionality for storing messages in the bot_cat_messages option.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatMessageApi {
 	private BotCatAuthService $botCatBasicAuthService;
 

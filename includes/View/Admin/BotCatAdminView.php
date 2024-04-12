@@ -7,31 +7,17 @@ namespace BotCat\View\Admin;
  *
  * This class represents the admin view for the BotCat plugin.
  */
-class BotCatAdminView {
-	/**
-	 * Registers the BotCat admin menu page.
-	 *
-	 * @return void
-	 */
-	public function bot_cat_admin(): void {
-		add_menu_page(
-			'Home',
-			'BotCat',
-			'manage_options',
-			'bot-cat',
-			[ &$this, 'bot_cat_view' ],
-			'dashicons-testimonial',
-			'120'
-		);
-	}
 
+defined( 'ABSPATH' ) || exit;
+
+class BotCatAdminView {
 	/**
 	 * Displays the BotCat admin settings page.
 	 *
 	 * @return void
 	 *
 	 */
-	public function bot_cat_view(): void {
+	public static function bot_cat_view(): void {
 		$options = get_option( BOT_CAT_OPTION_PREFIX . 'basic' );
 
 		?>
@@ -88,5 +74,23 @@ class BotCatAdminView {
 
 
 		submit_button();
+	}
+
+	/**
+	 * Registers the BotCat admin menu page.
+	 *
+	 * @return void
+	 */
+	public static function bot_cat_admin(): void {
+		$instance = new self();
+		add_menu_page(
+			'Home',
+			'BotCat',
+			'manage_options',
+			'bot-cat',
+			[ $instance, 'bot_cat_view' ],
+			'dashicons-testimonial',
+			'120'
+		);
 	}
 }

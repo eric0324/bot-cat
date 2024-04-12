@@ -10,6 +10,9 @@ use JsonException;
  *
  * This class is responsible for registering REST routes and storing API token, chat ID, and UUID for the Telegram bot.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatTelegramAuthApi {
 	private BotCatAuthService $botCatBasicAuthService;
 

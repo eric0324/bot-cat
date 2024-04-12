@@ -9,6 +9,9 @@ use WP_Post;
  *
  * This class is responsible for generating various types of messages for different actions.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatMessageService {
 
 	private mixed $bot_cat_message;

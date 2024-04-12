@@ -2,6 +2,15 @@
 
 namespace BotCat\Service\Api;
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Class BotCatSlackService
+ *
+ * This class provides functionality to send text messages to Slack using the Bot Cat API.
+ *
+ * @package YourPackageNameHere
+ */
 class BotCatSlackService {
 
 	private $bot_api_url;

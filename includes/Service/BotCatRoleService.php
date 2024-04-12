@@ -7,6 +7,9 @@ namespace BotCat\Service;
  *
  * The BotCatRoleService class provides methods to retrieve the UUIDs for different types of actions and roles.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatRoleService {
 	private array $options;
 	private array $enable_services;

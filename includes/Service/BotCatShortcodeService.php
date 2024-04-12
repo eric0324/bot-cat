@@ -2,19 +2,14 @@
 
 namespace BotCat\Service;
 
-class BotCatShortcodeService {
+defined( 'ABSPATH' ) || exit;
 
-	/**
-	 * Registers the shortcodes for the bot-cat OAuth button list.
-	 *
-	 * This method adds the 'bot-cat-oauth' shortcode to the WordPress shortcode system,
-	 * using the 'bot_cat_oauth_button_list' method of this class.
-	 *
-	 * @return void
-	 */
-	public function register_shortcodes(): void {
-		add_shortcode( 'bot-cat-oauth', [ &$this, 'bot_cat_oauth_button_list' ] );
-	}
+/**
+ * Class BotCatShortcodeService
+ *
+ * This class provides a service for generating the rendered HTML for the bot-cat OAuth button list.
+ */
+class BotCatShortcodeService {
 
 	/**
 	 * Returns the rendered HTML for the bot-cat OAuth button list.

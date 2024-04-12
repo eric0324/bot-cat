@@ -4,11 +4,15 @@ namespace BotCat\View\Admin;
 
 use BotCat\View\Admin\Partial\BotCatTargetOptions;
 
+
 /**
  * Class BotCatLineAdminView
  *
  * Represents the LINE admin view for the Bot Cat plugin.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatLineAdminView {
 
 	/**
@@ -16,14 +20,15 @@ class BotCatLineAdminView {
 	 *
 	 * @return void
 	 */
-	public function bot_cat_line_admin(): void {
+	public static function bot_cat_line_admin(): void {
+		$instance = new self();
 		add_submenu_page(
 			'bot-cat',
 			'LINE',
 			'LINE',
 			'manage_options',
 			'bot-cat-line-admin',
-			[ &$this, 'bot_cat_view' ] );
+			[ $instance, 'bot_cat_view' ] );
 	}
 
 	/**

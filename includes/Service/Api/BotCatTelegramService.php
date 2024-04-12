@@ -6,6 +6,9 @@ namespace BotCat\Service\Api;
  * Class BotCatTelegramService
  * Represents a service for sending text messages through the Telegram Bot API.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatTelegramService {
 
 	private string $bot_api_url;

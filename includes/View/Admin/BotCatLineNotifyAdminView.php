@@ -9,6 +9,9 @@ use BotCat\View\Admin\Partial\BotCatTargetOptions;
  *
  * This class provides methods to manage LINE Notify settings in the WordPress admin dashboard.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatLineNotifyAdminView {
 
 	/**
@@ -16,14 +19,15 @@ class BotCatLineNotifyAdminView {
 	 *
 	 * @return void
 	 */
-	public function bot_cat_line_notify_admin(): void {
+	public static function bot_cat_line_notify_admin(): void {
+		$instance = new self();
 		add_submenu_page(
 			'bot-cat',
 			'LINE Notify',
 			'LINE Notify',
 			'manage_options',
 			'bot-cat-line-notify-admin',
-			[ &$this, 'bot_cat_view' ] );
+			[ $instance, 'bot_cat_view' ] );
 	}
 
 	/**

@@ -10,6 +10,9 @@ use JsonException;
  *
  * This class provides functionality related to LINE authentication for the BotCat plugin.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatLineAuthApi {
 	private BotCatAuthService $botCatBasicAuthService;
 

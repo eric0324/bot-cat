@@ -10,6 +10,9 @@ use JsonException;
  *
  * This class is responsible for handling Line Notify authentication for BotCat.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatLineNotifyAuthApi {
 	private BotCatAuthService $botCatBasicAuthService;
 

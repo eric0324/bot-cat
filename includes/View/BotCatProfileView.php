@@ -9,6 +9,9 @@ use BotCat\Service\BotCatOAuthService;
  *
  * A class for displaying extra fields for the user profile with Bot Cat integration.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatProfileView {
 	private BotCatOAuthService $bot_cat_oauth_service;
 

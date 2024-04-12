@@ -7,6 +7,9 @@ namespace BotCat\Service\Api;
  *
  * This class is responsible for sending text messages to the LINE messaging platform.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatLineService {
 
 	private string $multicast_message_url;

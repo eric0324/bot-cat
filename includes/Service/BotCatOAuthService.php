@@ -7,6 +7,9 @@ namespace BotCat\Service;
  *
  * This class provides functionality for handling OAuth service integrations for BotCat.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatOAuthService {
 	/**
 	 * Generate HTML view for the bot cat OAuth buttons.

@@ -9,20 +9,24 @@ use BotCat\View\Admin\Partial\BotCatTargetOptions;
  *
  * Handles the administration view for Bot Cat Telegram settings.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatTelegramAdminView {
 	/**
 	 * Registers the Telegram admin submenu page.
 	 *
 	 * @return void
 	 */
-	public function bot_cat_telegram_admin(): void {
+	public static function bot_cat_telegram_admin(): void {
+		$instance = new self();
 		add_submenu_page(
 			'bot-cat',
 			'Telegram',
 			'Telegram',
 			'manage_options',
 			'bot-cat-telegram-admin',
-			[ &$this, 'bot_cat_view' ] );
+			[ $instance, 'bot_cat_view' ] );
 	}
 
 	/**

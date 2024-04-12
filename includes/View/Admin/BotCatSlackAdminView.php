@@ -9,20 +9,24 @@ use BotCat\View\Admin\Partial\BotCatTargetOptions;
  *
  * Provides the Slack admin view in the Bot Cat plugin settings.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatSlackAdminView {
 	/**
 	 * Displays the Slack admin page in the Bot Cat plugin settings.
 	 *
 	 * @return void
 	 */
-	public function bot_cat_slack_admin(): void {
+	public static function bot_cat_slack_admin(): void {
+		$instance = new self();
 		add_submenu_page(
 			'bot-cat',
 			'Slack',
 			'Slack',
 			'manage_options',
 			'bot-cat-slack-admin',
-			[ &$this, 'bot_cat_view' ] );
+			[ $instance, 'bot_cat_view' ] );
 	}
 
 	/**

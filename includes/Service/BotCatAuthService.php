@@ -9,6 +9,9 @@ use JsonException;
  *
  * Provides authentication services for the BotCat system.
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class BotCatAuthService {
 
 	/**
