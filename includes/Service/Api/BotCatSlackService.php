@@ -10,8 +10,6 @@ namespace BotCat\Service\Api;
 
 use JsonException;
 
-defined( 'ABSPATH' ) || exit;
-
 
 class BotCatSlackService {
 

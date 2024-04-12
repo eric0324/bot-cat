@@ -21,7 +21,6 @@ use BotCat\View\Admin\BotCatSlackAdminView;
 use BotCat\View\Admin\BotCatTelegramAdminView;
 use BotCat\View\BotCatProfileView;
 
-defined( 'ABSPATH' ) || exit;
 
 class BotCatInitializer {
 

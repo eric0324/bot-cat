@@ -9,8 +9,6 @@
 namespace BotCat\View\Admin;
 
 
-defined( 'ABSPATH' ) || exit;
-
 class BotCatAdminView {
 	/**
 	 * Displays the BotCat admin settings page.

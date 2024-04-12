@@ -10,8 +10,6 @@ namespace BotCat\Service;
 use WP_Post;
 
 
-defined( 'ABSPATH' ) || exit;
-
 class BotCatMessageService {
 
 	private mixed $bot_cat_message;

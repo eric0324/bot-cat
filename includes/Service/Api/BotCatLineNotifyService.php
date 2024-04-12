@@ -6,8 +6,6 @@
 namespace BotCat\Service\Api;
 
 
-defined( 'ABSPATH' ) || exit;
-
 class BotCatLineNotifyService {
 
 	private string $notify_url;

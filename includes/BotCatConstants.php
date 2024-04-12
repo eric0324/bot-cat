@@ -1,7 +1,5 @@
 <?php
 
-defined( 'ABSPATH' ) || exit;
-
 define( 'BOT_CAT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 const BOT_CAT_OFFICIAL_URL = 'https://bot-cat.com/';

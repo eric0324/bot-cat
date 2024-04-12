@@ -8,8 +8,6 @@
 namespace BotCat\Service\Api;
 
 
-defined( 'ABSPATH' ) || exit;
-
 class BotCatTelegramService {
 
 	private string $bot_api_url;

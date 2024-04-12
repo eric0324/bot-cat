@@ -8,7 +8,6 @@
 
 namespace BotCat\Service;
 
-defined( 'ABSPATH' ) || exit;
 
 class BotCatRoleService {
 	private array $options;

@@ -11,8 +11,6 @@ namespace BotCat\Service;
 use JsonException;
 
 
-defined( 'ABSPATH' ) || exit;
-
 class BotCatAuthService {
 
 	/**

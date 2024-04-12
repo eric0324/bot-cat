@@ -10,7 +10,6 @@ namespace BotCat\View\Admin;
 
 use BotCat\View\Admin\Partial\BotCatTargetOptions;
 
-defined( 'ABSPATH' ) || exit;
 
 class BotCatSlackAdminView {
 	/**

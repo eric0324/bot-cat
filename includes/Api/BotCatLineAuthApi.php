@@ -12,8 +12,6 @@ use BotCat\Service\BotCatAuthService;
 use JsonException;
 
 
-defined( 'ABSPATH' ) || exit;
-
 class BotCatLineAuthApi {
 	private BotCatAuthService $botCatBasicAuthService;
 

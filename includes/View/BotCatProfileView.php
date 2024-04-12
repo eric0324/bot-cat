@@ -11,8 +11,6 @@ namespace BotCat\View;
 use BotCat\Service\BotCatOAuthService;
 
 
-defined( 'ABSPATH' ) || exit;
-
 class BotCatProfileView {
 	private BotCatOAuthService $bot_cat_oauth_service;
 

@@ -7,8 +7,6 @@
 
 namespace BotCat\Service;
 
-defined( 'ABSPATH' ) || exit;
-
 
 class BotCatShortcodeService {
 

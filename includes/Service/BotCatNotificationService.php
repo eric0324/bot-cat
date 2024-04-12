@@ -16,8 +16,6 @@ use JsonException;
 use WP_Post;
 
 
-defined( 'ABSPATH' ) || exit;
-
 class BotCatNotificationService {
 	private BotCatRoleService $bot_cat_role_service;
 	private array $enable_service;
