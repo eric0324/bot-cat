@@ -1,10 +1,10 @@
 === BotCat ===
 Contributors: eric0324
-Tags: notification, WooCommerce, contact form 7, LINE, telegram
+Tags: notification, WooCommerce, chatbot, LINE, telegram
 Requires at least: 6.0
 Requires PHP: 8.2
-Tested up to: 6.0
-Stable tag: 1.1.5
+Tested up to: 6.4
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
