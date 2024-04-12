@@ -52,6 +52,7 @@ class BotCatSlackAdminView {
 		<?php settings_fields( BOT_CAT_OPTION_PREFIX . 'slack' ); ?>
 		<?php do_settings_sections( BOT_CAT_OPTION_PREFIX . 'slack' ); ?>
         <input
+                id="is_enable"
                 type="hidden"
                 name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX ) ?>slack[webhook_url]"
                 value="<?php if ( isset( $options['webhook_url'] ) )
@@ -68,7 +69,7 @@ class BotCatSlackAdminView {
 						<?php if ( isset( $options['is_enable'] ) )
 							echo esc_attr( checked( 1, $options['is_enable'], false ) ) ?>
                     >
-                    <label><?php _e( 'Enable', 'bot-cat' ) ?></label>
+                    <label for="is_enable"><?php _e( 'Enable', 'bot-cat' ) ?></label>
                 </td>
             </tr>
         </table>

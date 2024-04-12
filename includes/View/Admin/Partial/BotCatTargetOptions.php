@@ -261,13 +261,13 @@ class BotCatTargetOptions {
             <tr>
                 <th scope="row"><?php _e( 'Post', 'bot-cat' ) ?></th>
                 <td style="line-height: 30px;">
-                    <strong><?php _e( 'Publish', 'bot-cat' ) ?></strong><br>
+                    <strong><?php _e( 'The webhook for publish', 'bot-cat' ) ?></strong><br>
                     <input
                             id="publish_post_webhook"
                             style="width: 50%;"
                             name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX . $this->service_name . "[publish_post][webhook]" ) ?>"
                             value="<?php echo( isset( $options['publish_post']['webhook'] ) ? esc_attr( $options['publish_post']['webhook'] ) : '' ); ?>"
-                            placeholder="<?php _e( 'Please input your Slack Webhook URL', 'bot-cat' ) ?>"
+                            placeholder="<?php _e( 'Please input your Slack webhook URL', 'bot-cat' ) ?>"
                     >
                 </td>
             </tr>
@@ -276,13 +276,13 @@ class BotCatTargetOptions {
             <tr>
                 <th scope="row"></th>
                 <td style="line-height: 30px;">
-                    <strong><?php _e( 'Review', 'bot-cat' ) ?></strong><br>
+                    <strong><?php _e( 'The webhook for review', 'bot-cat' ) ?></strong><br>
                     <input
                             id="pending_post_webhook"
                             style="width: 50%;"
                             name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX . $this->service_name . "[pending_post][webhook]" ) ?>"
                             value="<?php echo( isset( $options['pending_post']['webhook'] ) ? esc_attr( $options['pending_post']['webhook'] ) : '' ); ?>"
-                            placeholder="<?php _e( 'Please input your Slack Webhook URL', 'bot-cat' ) ?>"
+                            placeholder="<?php _e( 'Please input your Slack webhook URL', 'bot-cat' ) ?>"
                     >
                 </td>
             </tr>
@@ -292,13 +292,13 @@ class BotCatTargetOptions {
             <tr>
                 <th scope="row"><?php _e( 'Comment', 'bot-cat' ) ?></th>
                 <td style="line-height: 30px;">
-                    <strong><?php _e( 'New Comment', 'bot-cat' ) ?></strong><br>
+                    <strong><?php _e( 'The webhook for new comment', 'bot-cat' ) ?></strong><br>
                     <input
                             id="new_comment_webhook"
                             style="width: 50%;"
                             name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX . $this->service_name . "[new_comment][webhook]" ) ?>"
                             value="<?php echo( isset( $options['new_comment']['webhook'] ) ? esc_attr( $options['new_comment']['webhook'] ) : '' ); ?>"
-                            placeholder="<?php _e( 'Please input your Slack Webhook URL', 'bot-cat' ) ?>"
+                            placeholder="<?php _e( 'Please input your Slack webhook URL', 'bot-cat' ) ?>"
                     >
                 </td>
             </tr>
@@ -308,13 +308,13 @@ class BotCatTargetOptions {
             <tr>
                 <th scope="row"><?php _e( 'User', 'bot-cat' ) ?></th>
                 <td style="line-height: 30px;">
-                    <strong><?php _e( 'New user', 'bot-cat' ) ?></strong><br>
+                    <strong><?php _e( 'The webhook for new user', 'bot-cat' ) ?></strong><br>
                     <input
                             id="new_user_webhook"
                             style="width: 50%;"
                             name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX . $this->service_name . "[new_user][webhook]" ) ?>"
                             value="<?php echo( isset( $options['new_user']['webhook'] ) ? esc_attr( $options['new_user']['webhook'] ) : '' ); ?>"
-                            placeholder="<?php _e( 'Please input your Slack Webhook URL', 'bot-cat' ) ?>"
+                            placeholder="<?php _e( 'Please input your Slack webhook URL', 'bot-cat' ) ?>"
                     >
                 </td>
             </tr>
@@ -332,13 +332,13 @@ class BotCatTargetOptions {
                 <tr>
                     <th scope="row"><?php _e( 'Product', 'bot-cat' ) ?></th>
                     <td style="line-height: 30px;">
-                        <strong><?php _e( 'New product', 'bot-cat' ) ?></strong><br>
+                        <strong><?php _e( 'The webhook for new product', 'bot-cat' ) ?></strong><br>
                         <input
                                 id="new_product_webhook"
                                 style="width: 50%;"
                                 name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX . $this->service_name . "[new_product][webhook]" ) ?>"
                                 value="<?php echo( isset( $options['new_product']['webhook'] ) ? esc_attr( $options['new_product']['webhook'] ) : '' ); ?>"
-                                placeholder="<?php _e( 'Please input your Slack Webhook URL', 'bot-cat' ) ?>"
+                                placeholder="<?php _e( 'Please input your Slack webhook URL', 'bot-cat' ) ?>"
                         >
                     </td>
                 </tr>
@@ -348,13 +348,13 @@ class BotCatTargetOptions {
                 <tr>
                     <th scope="row"></th>
                     <td style="line-height: 30px;">
-                        <strong><?php _e( 'Low stock', 'bot-cat' ) ?></strong><br>
+                        <strong><?php _e( 'The webhook for low stock', 'bot-cat' ) ?></strong><br>
                         <input
                                 id="low_stocke_webhook"
                                 style="width: 50%;"
                                 name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX . $this->service_name . "[low_stock][webhook]" ) ?>"
                                 value="<?php echo( isset( $options['low_stock']['webhook'] ) ? esc_attr( $options['low_stock']['webhook'] ) : '' ); ?>"
-                                placeholder="<?php _e( 'Please input your Slack Webhook URL', 'bot-cat' ) ?>"
+                                placeholder="<?php _e( 'Please input your Slack webhook URL', 'bot-cat' ) ?>"
                         >
                     </td>
                 </tr>
@@ -364,13 +364,13 @@ class BotCatTargetOptions {
                 <tr>
                     <th scope="row"></th>
                     <td style="line-height: 30px;">
-                        <strong><?php _e( 'No stock', 'bot-cat' ) ?> </strong><br>
+                        <strong><?php _e( 'The webhook for no stock', 'bot-cat' ) ?> </strong><br>
                         <input
                                 id="out_stock_webhook"
                                 style="width: 50%;"
                                 name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX . $this->service_name . "[out_stock][webhook]" ) ?>"
                                 value="<?php echo( isset( $options['out_stock']['webhook'] ) ? esc_attr( $options['out_stock']['webhook'] ) : '' ); ?>"
-                                placeholder="<?php _e( 'Please input your Slack Webhook URL', 'bot-cat' ) ?>"
+                                placeholder="<?php _e( 'Please input your Slack webhook URL', 'bot-cat' ) ?>"
                         >
                     </td>
                 </tr>
@@ -380,13 +380,13 @@ class BotCatTargetOptions {
                 <tr>
                     <th scope="row"><?php _e( 'Order', 'bot-cat' ) ?></th>
                     <td style="line-height: 30px;">
-                        <strong><?php _e( 'New order', 'bot-cat' ) ?></strong><br>
+                        <strong><?php _e( 'The webhook for new order', 'bot-cat' ) ?></strong><br>
                         <input
                                 id="new_order_webhook"
                                 style="width: 50%;"
                                 name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX . $this->service_name . "[new_order][webhook]" ) ?>"
                                 value="<?php echo( isset( $options['new_order']['webhook'] ) ? esc_attr( $options['new_order']['webhook'] ) : '' ); ?>"
-                                placeholder="<?php _e( 'Please input your Slack Webhook URL', 'bot-cat' ) ?>"
+                                placeholder="<?php _e( 'Please input your Slack webhook URL', 'bot-cat' ) ?>"
                         >
                     </td>
                 </tr>

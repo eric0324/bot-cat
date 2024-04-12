@@ -64,13 +64,14 @@ class BotCatLineAdminView {
                 <th scope="row"><?php _e( 'Notification enabled', 'bot-cat' ) ?></th>
                 <td>
                     <input
+                            id="is_enable"
                             type="checkbox"
                             name="<?php echo esc_attr( BOT_CAT_OPTION_PREFIX ) ?>line[is_enable]"
                             value="1"
 						<?php if ( isset( $options['is_enable'] ) )
 							echo esc_attr( checked( 1, $options['is_enable'], false ) ) ?>
                     >
-                    <label><?php _e( 'Enable', 'bot-cat' ) ?></label>
+                    <label for="is_enable"><?php _e( 'Enable', 'bot-cat' ) ?></label>
 
                 </td>
             </tr>
