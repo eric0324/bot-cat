@@ -1,5 +1,7 @@
 <?php
 
+namespace BotCat\Service;
+
 /**
  * Class BotCatOAuthService
  *

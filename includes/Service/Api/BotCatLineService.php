@@ -1,5 +1,7 @@
 <?php
 
+namespace BotCat\Service\Api;
+
 /**
  * Class BotCatLineService
  *
@@ -20,7 +22,6 @@ class BotCatLineService {
 	 * @param string $message The text message to send.
 	 *
 	 * @return void The decoded JSON response from the API.
-	 * @throws JsonException
 	 */
 	public function bot_cat_send_text_message( string $to, string $message ): void {
 		$options = get_option( BOT_CAT_OPTION_PREFIX . 'line' );

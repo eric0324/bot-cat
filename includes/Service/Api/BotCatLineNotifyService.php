@@ -1,5 +1,7 @@
 <?php
 
+namespace BotCat\Service\Api;
+
 /**
  * This class provides functionality to send text messages using the Line Notify API.
  */

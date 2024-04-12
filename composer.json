@@ -1,0 +1,30 @@
+{
+  "name": "eric0324/bot-cat",
+  "description": "",
+  "license": "GPL-2.0",
+  "keywords": [],
+  "homepage": "https://ericwu.asias/",
+  "type": "wordpress-plugin",
+  "authors": [
+        {
+            "name": "EricWu",
+            "email": "smart032410@gmail.com"
+        }
+    ],
+  "support": {
+    "issues": "https://wordpress.org/support/plugin/bot-cat/"
+  },
+  "config": {
+    "platform": {
+      "php": "8.2.1"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "BotCat\\": "includes/"
+    }
+  }
+}

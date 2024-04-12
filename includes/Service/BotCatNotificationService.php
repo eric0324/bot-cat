@@ -1,5 +1,15 @@
 <?php
 
+
+namespace BotCat\Service;
+
+use BotCat\Service\Api\BotCatLineNotifyService;
+use BotCat\Service\Api\BotCatLineService;
+use BotCat\Service\Api\BotCatSlackService;
+use BotCat\Service\Api\BotCatTelegramService;
+use JsonException;
+use WP_Post;
+
 /**
  * Class BotCatNotificationService
  *

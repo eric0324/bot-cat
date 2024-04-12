@@ -51,6 +51,12 @@ We already support common chatbot platforms, and we will support more.
 
 == Changelog ==
 
+= 1.1.5 =
+* use composer
+
+= 1.1.5 =
+* Fixed some bugs.
+
 = 1.1.4 =
 * Support for WordPress 6.4.
 

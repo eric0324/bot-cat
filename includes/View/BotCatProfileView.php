@@ -1,5 +1,9 @@
 <?php
 
+namespace BotCat\View;
+
+use BotCat\Service\BotCatOAuthService;
+
 /**
  * Class BotCatProfileView
  *

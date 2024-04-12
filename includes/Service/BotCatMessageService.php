@@ -1,5 +1,9 @@
 <?php
 
+namespace BotCat\Service;
+
+use WP_Post;
+
 /**
  * Class BotCatMessageService
  *

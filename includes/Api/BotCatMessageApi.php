@@ -1,11 +1,15 @@
 <?php
 
+namespace BotCat\Api;
+
+use BotCat\Service\BotCatAuthService;
+use JsonException;
+
 /**
  * Class BotCatMessageApi.
  *
  * This class provides functionality for storing messages in the bot_cat_messages option.
  */
-
 class BotCatMessageApi {
 	private BotCatAuthService $botCatBasicAuthService;
 

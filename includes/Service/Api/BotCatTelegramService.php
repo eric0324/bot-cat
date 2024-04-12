@@ -1,5 +1,7 @@
 <?php
 
+namespace BotCat\Service\Api;
+
 /**
  * Class BotCatTelegramService
  * Represents a service for sending text messages through the Telegram Bot API.
