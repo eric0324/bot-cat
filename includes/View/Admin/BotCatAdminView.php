@@ -1,12 +1,13 @@
 <?php
 
-namespace BotCat\View\Admin;
-
 /**
  * Class BotCatAdminView
  *
  * This class represents the admin view for the BotCat plugin.
  */
+
+namespace BotCat\View\Admin;
+
 
 defined( 'ABSPATH' ) || exit;
 

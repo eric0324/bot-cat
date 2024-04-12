@@ -1,15 +1,16 @@
 <?php
 
-namespace BotCat\Api;
-
-use BotCat\Service\BotCatAuthService;
-use JsonException;
-
 /**
  * Class BotCatLineNotifyAuthApi
  *
  * This class is responsible for handling Line Notify authentication for BotCat.
  */
+
+namespace BotCat\Api;
+
+use BotCat\Service\BotCatAuthService;
+use JsonException;
+
 
 defined( 'ABSPATH' ) || exit;
 

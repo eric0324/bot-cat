@@ -1,14 +1,15 @@
 <?php
 
-namespace BotCat\View;
-
-use BotCat\Service\BotCatOAuthService;
-
 /**
  * Class BotCatProfileView
  *
  * A class for displaying extra fields for the user profile with Bot Cat integration.
  */
+
+namespace BotCat\View;
+
+use BotCat\Service\BotCatOAuthService;
+
 
 defined( 'ABSPATH' ) || exit;
 

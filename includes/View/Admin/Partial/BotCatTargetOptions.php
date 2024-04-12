@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Class BotCatTargetOptions
+ *
+ * Represents the target options for a BotCat class.
+ */
+
 namespace BotCat\View\Admin\Partial;
 
 class BotCatTargetOptions {

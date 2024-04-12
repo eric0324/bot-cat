@@ -1,22 +1,24 @@
 <?php
 
-namespace BotCat\Service\Api;
-
-defined( 'ABSPATH' ) || exit;
-
 /**
  * Class BotCatSlackService
  *
- * This class provides functionality to send text messages to Slack using the Bot Cat API.
- *
- * @package YourPackageNameHere
+ * This class provides methods for sending text messages to a Slack channel.
  */
+
+namespace BotCat\Service\Api;
+
+use JsonException;
+
+defined( 'ABSPATH' ) || exit;
+
+
 class BotCatSlackService {
 
-	private $bot_api_url;
-	private $send_message_path;
 
-
+	/**
+	 * @throws JsonException
+	 */
 	public function bot_cat_send_text_message( $to, $message ) {
 		$response = wp_remote_post( $to,
 			[

@@ -1,12 +1,12 @@
 <?php
 
-namespace BotCat\Service;
-
 /**
  * Class BotCatOAuthService
  *
  * This class provides functionality for handling OAuth service integrations for BotCat.
  */
+
+namespace BotCat\Service;
 
 defined( 'ABSPATH' ) || exit;
 

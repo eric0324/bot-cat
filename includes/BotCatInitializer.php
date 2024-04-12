@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Class BotCatInitializer
+ *
+ * This class initializes the Bot Cat plugin by registering various actions and hooks.
+ */
+
 namespace BotCat;
 
 use BotCat\Api\BotCatLineAuthApi;
@@ -17,11 +23,6 @@ use BotCat\View\BotCatProfileView;
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Class BotCatInitializer
- *
- * This class initializes the Bot Cat plugin by registering various actions and hooks.
- */
 class BotCatInitializer {
 
 	/**

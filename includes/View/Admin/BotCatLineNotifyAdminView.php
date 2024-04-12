@@ -1,14 +1,15 @@
 <?php
 
-namespace BotCat\View\Admin;
-
-use BotCat\View\Admin\Partial\BotCatTargetOptions;
-
 /**
  * Class BotCatLineNotifyAdminView
  *
  * This class provides methods to manage LINE Notify settings in the WordPress admin dashboard.
  */
+
+namespace BotCat\View\Admin;
+
+use BotCat\View\Admin\Partial\BotCatTargetOptions;
+
 
 defined( 'ABSPATH' ) || exit;
 

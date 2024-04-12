@@ -1,15 +1,16 @@
 <?php
 
-namespace BotCat\Api;
-
-use BotCat\Service\BotCatAuthService;
-use JsonException;
-
 /**
  * Class BotCatLineAuthApi
  *
  * This class provides functionality related to LINE authentication for the BotCat plugin.
  */
+
+namespace BotCat\Api;
+
+use BotCat\Service\BotCatAuthService;
+use JsonException;
+
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class BotCatNotificationService
+ *
+ * This class is responsible for sending notifications for various events.
+ */
 
 
 namespace BotCat\Service;
@@ -10,11 +15,6 @@ use BotCat\Service\Api\BotCatTelegramService;
 use JsonException;
 use WP_Post;
 
-/**
- * Class BotCatNotificationService
- *
- * This class is responsible for sending notifications for various events.
- */
 
 defined( 'ABSPATH' ) || exit;
 

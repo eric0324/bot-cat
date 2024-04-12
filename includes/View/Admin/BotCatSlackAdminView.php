@@ -1,14 +1,14 @@
 <?php
 
-namespace BotCat\View\Admin;
-
-use BotCat\View\Admin\Partial\BotCatTargetOptions;
-
 /**
  * Class BotCatSlackAdminView
  *
  * Provides the Slack admin view in the Bot Cat plugin settings.
  */
+
+namespace BotCat\View\Admin;
+
+use BotCat\View\Admin\Partial\BotCatTargetOptions;
 
 defined( 'ABSPATH' ) || exit;
 

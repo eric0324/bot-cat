@@ -1,14 +1,15 @@
 <?php
 
-namespace BotCat\Service;
-
-use JsonException;
-
 /**
  * Class BotCatAuthService
  *
  * Provides authentication services for the BotCat system.
  */
+
+namespace BotCat\Service;
+
+use JsonException;
+
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,10 +1,10 @@
 <?php
-
-namespace BotCat\Service\Api;
-
 /**
  * This class provides functionality to send text messages using the Line Notify API.
  */
+
+namespace BotCat\Service\Api;
+
 
 defined( 'ABSPATH' ) || exit;
 

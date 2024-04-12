@@ -1,14 +1,14 @@
 <?php
-
-namespace BotCat\Service;
-
-use WP_Post;
-
 /**
  * Class BotCatMessageService
  *
  * This class is responsible for generating various types of messages for different actions.
  */
+
+namespace BotCat\Service;
+
+use WP_Post;
+
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,15 +1,16 @@
 <?php
 
-namespace BotCat\Api;
-
-use BotCat\Service\BotCatAuthService;
-use JsonException;
-
 /**
  * Class BotCatTelegramAuthApi
  *
  * This class is responsible for registering REST routes and storing API token, chat ID, and UUID for the Telegram bot.
  */
+
+namespace BotCat\Api;
+
+use BotCat\Service\BotCatAuthService;
+use JsonException;
+
 
 defined( 'ABSPATH' ) || exit;
 

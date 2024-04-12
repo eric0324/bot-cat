@@ -1,12 +1,12 @@
 <?php
 
-namespace BotCat\Service;
-
 /**
  * Class BotCatRoleService
  *
  * The BotCatRoleService class provides methods to retrieve the UUIDs for different types of actions and roles.
  */
+
+namespace BotCat\Service;
 
 defined( 'ABSPATH' ) || exit;
 

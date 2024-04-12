@@ -1,15 +1,16 @@
 <?php
 
-namespace BotCat\Api;
-
-use BotCat\Service\BotCatAuthService;
-use JsonException;
-
 /**
  * Class BotCatMessageApi.
  *
  * This class provides functionality for storing messages in the bot_cat_messages option.
  */
+
+namespace BotCat\Api;
+
+use BotCat\Service\BotCatAuthService;
+use JsonException;
+
 
 defined( 'ABSPATH' ) || exit;
 

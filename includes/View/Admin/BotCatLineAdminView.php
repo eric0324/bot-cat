@@ -1,15 +1,15 @@
 <?php
 
-namespace BotCat\View\Admin;
-
-use BotCat\View\Admin\Partial\BotCatTargetOptions;
-
-
 /**
  * Class BotCatLineAdminView
  *
  * Represents the LINE admin view for the Bot Cat plugin.
  */
+
+namespace BotCat\View\Admin;
+
+use BotCat\View\Admin\Partial\BotCatTargetOptions;
+
 
 defined( 'ABSPATH' ) || exit;
 

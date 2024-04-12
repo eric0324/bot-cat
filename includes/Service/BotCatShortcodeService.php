@@ -1,14 +1,15 @@
 <?php
-
-namespace BotCat\Service;
-
-defined( 'ABSPATH' ) || exit;
-
 /**
  * Class BotCatShortcodeService
  *
  * This class provides a service for generating the rendered HTML for the bot-cat OAuth button list.
  */
+
+namespace BotCat\Service;
+
+defined( 'ABSPATH' ) || exit;
+
+
 class BotCatShortcodeService {
 
 	/**

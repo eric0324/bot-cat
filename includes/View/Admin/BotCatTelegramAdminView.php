@@ -1,14 +1,15 @@
 <?php
 
-namespace BotCat\View\Admin;
-
-use BotCat\View\Admin\Partial\BotCatTargetOptions;
-
 /**
  * Class BotCatTelegramAdminView
  *
  * Handles the administration view for Bot Cat Telegram settings.
  */
+
+namespace BotCat\View\Admin;
+
+use BotCat\View\Admin\Partial\BotCatTargetOptions;
+
 
 defined( 'ABSPATH' ) || exit;
 
