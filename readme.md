@@ -15,7 +15,7 @@ Simply send chatbot notifications via plugins
 
 ## Supported extensions and events
 
-The [BotCat](https://bot-cat.com) plugin for WordPress supports core WordPress events, plus events from such popular plugins as **WooCommerce**. See the full list of supported solutions and events below:
+The [BotCat](https://bot-cat.com) plugin for WordPress supports core WordPress events. See the full list of supported events below:
 
 ### WordPress
 
@@ -28,14 +28,3 @@ The [BotCat](https://bot-cat.com) plugin for WordPress supports core WordPress e
 
 * User
     * User Registered
-
-### WooCommerce
-
-* Order
-    * New Order
-
-* Product
-    * New Product
-    * Low Stock
-    * Out Of Stock
-    * On Backorder

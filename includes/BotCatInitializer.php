@@ -107,12 +107,6 @@ class BotCatInitializer {
 
 		add_action( 'show_user_profile', [ BotCatProfileView::class, 'bot_cat_extra_user_profile_fields' ] );
 		add_action( 'edit_user_profile', [ BotCatProfileView::class, 'bot_cat_extra_user_profile_fields' ] );
-		if ( class_exists( 'WooCommerce' ) ) {
-			add_action( 'woocommerce_edit_account_form', [
-				BotCatProfileView::class,
-				'bot_cat_extra_user_profile_fields'
-			] );
-		}
 	}
 
 	/**
@@ -145,7 +139,7 @@ class BotCatInitializer {
 
 	/**
 	 * The bot_cat_notification_service method is responsible for setting up various actions and hooks
-	 * for sending notifications related to comments, users, posts, and WooCommerce events.
+	 * for sending notifications related to comments, users, and posts.
 	 *
 	 * @return void
 	 */
@@ -155,26 +149,6 @@ class BotCatInitializer {
 		add_action( 'user_register', [ BotCatNotificationService::class, 'bot_cat_new_user_alert' ], 10, 1 );
 		add_action( 'wp_insert_post', [ BotCatNotificationService::class, 'bot_cat_post_publish_alert' ], 10, 3 );
 		add_action( 'wp_insert_post', [ BotCatNotificationService::class, 'bot_cat_post_review_alert' ], 10, 3 );
-
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		}
-
-		if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
-			add_action( 'transition_post_status', [
-				BotCatNotificationService::class,
-				'bot_cat_new_product_alert'
-			], 10, 3 );
-			add_action( 'woocommerce_low_stock', [
-				BotCatNotificationService::class,
-				'bot_cat_low_stock_alert'
-			], 10, 1 );
-			add_action( 'woocommerce_no_stock', [ BotCatNotificationService::class, 'bot_cat_no_stock_alert' ], 10, 1 );
-			add_action( 'woocommerce_new_order', [
-				BotCatNotificationService::class,
-				'bot_cat_new_order_alert'
-			], 1, 1 );
-		}
 	}
 }
 

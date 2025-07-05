@@ -28,8 +28,8 @@ class BotCatRoleService {
 			}
 		}
 
-		$this->admin_type_array = [ 'administrator', 'editor', 'author', 'contributor', 'shop_manager' ];
-		$this->user_type_array  = [ 'subscriber', 'customer' ];
+		$this->admin_type_array = [ 'administrator', 'editor', 'author', 'contributor' ];
+		$this->user_type_array  = [ 'subscriber' ];
 	}
 
 	/**
@@ -156,62 +156,4 @@ class BotCatRoleService {
 		return $uuids;
 	}
 
-	/**
-	 * @param string $action_name
-	 *
-	 * @return array
-	 */
-	public function bot_cat_get_can_receive_wc_product_type_uuids( string $action_name ): array {
-		$uuids = [];
-
-		foreach ( $this->enable_services as $enable_service ) {
-			$admin_roles = [];
-			$user_roles  = [];
-			foreach ( $this->options[ $enable_service ][ $action_name ] as $role => $need_send ) {
-				if ( in_array( $role, $this->admin_type_array, true ) ) {
-					$admin_roles[] = $role;
-				}
-				if ( in_array( $role, $this->user_type_array, true ) ) {
-					$user_roles[] = $role;
-				}
-			}
-
-			$uuids[ $enable_service ]['admin'] = $this->bot_cat_get_uuids_by_role_array( $admin_roles, $enable_service );
-			$uuids[ $enable_service ]['user']  = $this->bot_cat_get_uuids_by_role_array( $user_roles, $enable_service );
-		}
-
-		return $uuids;
-	}
-
-	/**
-	 * Get the UUIDs for the WC order type that can receive a bot category action
-	 *
-	 * @param string $action_name The name of the action
-	 * @param WC_Order $order The WC_Order object
-	 *
-	 * @return array An array containing the UUIDs for the admin and user roles
-	 */
-	public function bot_cat_get_can_receive_wc_order_type_uuids( string $action_name, WC_Order $order ): array {
-		$uuids = [];
-
-		foreach ( $this->enable_services as $enable_service ) {
-			$admin_roles = [];
-			foreach ( $this->options[ $enable_service ][ $action_name ] as $role => $need_send ) {
-				if ( in_array( $role, $this->admin_type_array, true ) ) {
-					$admin_roles[] = $role;
-				}
-			}
-
-			$uuid = null;
-			if ( $this->options[ $enable_service ][ $action_name ]['user'] ) {
-				$uuid = get_user_meta( $order->user_id, BOT_CAT_OPTION_PREFIX . $enable_service . '_uuid', true );
-
-			}
-
-			$uuids[ $enable_service ]['admin'] = $this->bot_cat_get_uuids_by_role_array( $admin_roles, $enable_service );
-			$uuids[ $enable_service ]['user']  = $uuid ? [ $uuid ] : [];
-		}
-
-		return $uuids;
-	}
 }

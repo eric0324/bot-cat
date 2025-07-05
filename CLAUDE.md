@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Bot Cat is a WordPress plugin that sends automated chatbot notifications via LINE, Telegram, and Slack when specific WordPress/WooCommerce events occur.
+Bot Cat is a WordPress plugin that sends automated chatbot notifications via LINE, Telegram, and Slack when specific WordPress events occur.
 
 ## Architecture
 
@@ -34,9 +34,8 @@ composer dump-autoload
 ## Key Integration Points
 
 1. **WordPress Hooks**: Posts, comments, and user registration events
-2. **WooCommerce Hooks**: Orders and product events (stock management)
-3. **REST API Routes**: OAuth callbacks for each platform
-4. **Shortcode**: `[bot-cat-oauth]` for OAuth authentication buttons
+2. **REST API Routes**: OAuth callbacks for each platform
+3. **Shortcode**: `[bot-cat-oauth]` for OAuth authentication buttons
 
 ## Technical Requirements
 
