@@ -75,35 +75,6 @@ class BotCatOAuthService {
 			$html .= "</td></tr>";
 		}
 
-		// LINE Notify
-		$options = get_option( BOT_CAT_OPTION_PREFIX . 'line_notify' );
-
-		// Check user role need show OAuth button
-		$oauth_show_profile = false;
-		if ( $options['oauth_show_profile'] ) {
-			foreach ( $roles as $role ) {
-				if ( isset( $options['oauth_show_profile'][ $role ] ) ) {
-					$oauth_show_profile = true;
-					break;
-				}
-			}
-		}
-
-		if ( isset( $options['is_enable'] ) && $oauth_show_profile ) {
-			$url              = BOT_CAT_OFFICIAL_URL . 'auth/' . $redirect_token . '/line_notify?user=' . $user_token;
-			$line_notify_uuid = get_user_meta( $user_id, BOT_CAT_OPTION_PREFIX . 'line_notify_uuid' );
-
-			$html .= '<tr><th>LINE Notify</th><td>';
-
-			if ( isset( $line_notify_uuid ) && $line_notify_uuid ) {
-				$html .= __( 'Connected', 'bot-cat' );
-			} else {
-				$html .= '<a href="' . esc_url( $url ) . '">' . __( 'Connect', 'bot-cat' ) . '</a>';
-			}
-
-			$html .= "</td></tr>";
-		}
-
 		// Telegram
 		$options = get_option( BOT_CAT_OPTION_PREFIX . 'telegram' );
 

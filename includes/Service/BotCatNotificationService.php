@@ -8,7 +8,6 @@
 
 namespace BotCat\Service;
 
-use BotCat\Service\Api\BotCatLineNotifyService;
 use BotCat\Service\Api\BotCatLineService;
 use BotCat\Service\Api\BotCatSlackService;
 use BotCat\Service\Api\BotCatTelegramService;
@@ -22,7 +21,6 @@ class BotCatNotificationService {
 	private BotCatMessageService $bot_cat_message_service;
 	private BotCatLineService $bot_cat_line_service;
 	private BotCatTelegramService $bot_cat_telegram_service;
-	private BotCatLineNotifyService $bot_cat_line_notify_service;
 	private BotCatSlackService $bot_cat_slack_service;
 
 	public function __construct() {
@@ -31,7 +29,6 @@ class BotCatNotificationService {
 
 		$this->bot_cat_message_service     = new BotCatMessageService();
 		$this->bot_cat_line_service        = new BotCatLineService();
-		$this->bot_cat_line_notify_service = new BotCatLineNotifyService();
 		$this->bot_cat_telegram_service    = new BotCatTelegramService();
 		$this->bot_cat_slack_service       = new BotCatSlackService();
 	}
@@ -81,16 +78,6 @@ class BotCatNotificationService {
 
 					if ( isset( $uuids[ $service ]['user'] ) && count( $uuids[ $service ]['user'] ) > 0 ) {
 						$this->bot_cat_line_service->bot_cat_send_text_message( $uuids[ $service ]['user'], $messages['user'] );
-					}
-				}
-
-				if ( $service === 'line_notify' ) {
-					if ( isset( $uuids[ $service ]['admin'] ) && count( $uuids[ $service ]['admin'] ) > 0 ) {
-						$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids[ $service ]['admin'], $messages['admin'] );
-					}
-
-					if ( isset( $uuids[ $service ]['user'] ) && count( $uuids[ $service ]['user'] ) > 0 ) {
-						$this->bot_cat_line_notify_service->bot_cat_send_text_message( $uuids[ $service ]['user'], $messages['user'] );
 					}
 				}
 

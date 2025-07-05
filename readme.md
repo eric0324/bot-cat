@@ -4,7 +4,7 @@ Simply send chatbot notifications via plugins
 
 ## Description
 
-[BotCat](https://bot-cat.com) plugin is the ultimate way to send chatbot message via *LINE*, *LINE Notify*, *Telegram*, and others.
+[BotCat](https://bot-cat.com) plugin is the ultimate way to send chatbot message via *LINE*, *Telegram*, *Slack*, and others.
 
 ### Installation
 

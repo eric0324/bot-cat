@@ -8,4 +8,4 @@ const BOT_CAT_OPTION_PREFIX = 'bot_cat_';
 
 const BOT_CAT_REST_NAMESPACE_PREFIX = 'bot-cat';
 
-const SERVICES = [ 'line', 'line_notify', 'telegram', 'slack' ];
+const SERVICES = [ 'line', 'telegram', 'slack' ];

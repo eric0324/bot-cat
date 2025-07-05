@@ -9,14 +9,12 @@
 namespace BotCat;
 
 use BotCat\Api\BotCatLineAuthApi;
-use BotCat\Api\BotCatLineNotifyAuthApi;
 use BotCat\Api\BotCatMessageApi;
 use BotCat\Api\BotCatTelegramAuthApi;
 use BotCat\Service\BotCatNotificationService;
 use BotCat\Service\BotCatShortcodeService;
 use BotCat\View\Admin\BotCatAdminView;
 use BotCat\View\Admin\BotCatLineAdminView;
-use BotCat\View\Admin\BotCatLineNotifyAdminView;
 use BotCat\View\Admin\BotCatSlackAdminView;
 use BotCat\View\Admin\BotCatTelegramAdminView;
 use BotCat\View\BotCatProfileView;
@@ -66,16 +64,14 @@ class BotCatInitializer {
 	 * function `register_setting()`. It registers the following settings:
 	 *
 	 * 1. Basic Settings: BOT_CAT_OPTION_PREFIX + 'basic'
-	 * 2. Line Notify Settings: BOT_CAT_OPTION_PREFIX + 'line_notify'
-	 * 3. Line Settings: BOT_CAT_OPTION_PREFIX + 'line'
-	 * 4. Telegram Settings: BOT_CAT_OPTION_PREFIX + 'telegram'
-	 * 5. Slack Settings: BOT_CAT_OPTION_PREFIX + 'slack'
+	 * 2. Line Settings: BOT_CAT_OPTION_PREFIX + 'line'
+	 * 3. Telegram Settings: BOT_CAT_OPTION_PREFIX + 'telegram'
+	 * 4. Slack Settings: BOT_CAT_OPTION_PREFIX + 'slack'
 	 *
 	 * @return void
 	 */
 	public static function bot_cat_register_settings(): void {
 		register_setting( BOT_CAT_OPTION_PREFIX . 'basic', BOT_CAT_OPTION_PREFIX . 'basic' );
-		register_setting( BOT_CAT_OPTION_PREFIX . 'line_notify', BOT_CAT_OPTION_PREFIX . 'line_notify' );
 		register_setting( BOT_CAT_OPTION_PREFIX . 'line', BOT_CAT_OPTION_PREFIX . 'line' );
 		register_setting( BOT_CAT_OPTION_PREFIX . 'telegram', BOT_CAT_OPTION_PREFIX . 'telegram' );
 		register_setting( BOT_CAT_OPTION_PREFIX . 'slack', BOT_CAT_OPTION_PREFIX . 'slack' );
@@ -125,14 +121,13 @@ class BotCatInitializer {
 	 * This method adds action hooks to the "admin_menu" action, which will be triggered
 	 * when the WordPress admin menu is being rendered. The action hooks will call the
 	 * corresponding admin methods in the BotCatAdminView, BotCatLineAdminView,
-	 * BotCatLineNotifyAdminView, BotCatTelegramAdminView, and BotCatSlackAdminView classes.
+	 * BotCatTelegramAdminView, and BotCatSlackAdminView classes.
 	 *
 	 * @return void
 	 */
 	public static function bot_cat_admin_view(): void {
 		add_action( 'admin_menu', [ BotCatAdminView::class, 'bot_cat_admin' ] );
 		add_action( 'admin_menu', [ BotCatLineAdminView::class, 'bot_cat_line_admin' ] );
-		add_action( 'admin_menu', [ BotCatLineNotifyAdminView::class, 'bot_cat_line_notify_admin' ] );
 		add_action( 'admin_menu', [ BotCatTelegramAdminView::class, 'bot_cat_telegram_admin' ] );
 		add_action( 'admin_menu', [ BotCatSlackAdminView::class, 'bot_cat_slack_admin' ] );
 	}
@@ -144,7 +139,6 @@ class BotCatInitializer {
 	 */
 	public static function bot_cat_api(): void {
 		add_action( 'rest_api_init', [ BotCatLineAuthApi::class, 'register_rest_route' ] );
-		add_action( 'rest_api_init', [ BotCatLineNotifyAuthApi::class, 'register_rest_route' ] );
 		add_action( 'rest_api_init', [ BotCatTelegramAuthApi::class, 'register_rest_route' ] );
 		add_action( 'rest_api_init', [ BotCatMessageApi::class, 'register_rest_route' ] );
 	}
