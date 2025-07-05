@@ -8,16 +8,8 @@
 
 namespace BotCat\Api;
 
-use BotCat\Service\BotCatAuthService;
-use JsonException;
-
 
 class BotCatTelegramAuthApi {
-	private BotCatAuthService $botCatBasicAuthService;
-
-	public function __construct() {
-		$this->botCatBasicAuthService = new BotCatAuthService();
-	}
 
 	/**
 	 * Register the REST routes for the BOT_CAT plugin.
@@ -44,21 +36,17 @@ class BotCatTelegramAuthApi {
 	 * @param array $request The request data containing the API token and chat ID.
 	 *
 	 * @return void
-	 * @throws JsonException
 	 */
 	public function bot_cat_store_token( $request ): void {
-
-		$can_access = $this->botCatBasicAuthService->bot_cat_check_key( $request );
-
-		if ( ! $can_access ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json( [ 'Message' => 'Unauthorized' ], 401 );
 		}
 
 		$options = get_option( BOT_CAT_OPTION_PREFIX . 'telegram' );
 
 		$options = array_merge( $options, [
-			'api_token' => $request['api_token'],
-			'chat_id'   => $request['chat_id'],
+			'api_token' => sanitize_text_field( $request['api_token'] ),
+			'chat_id'   => sanitize_text_field( $request['chat_id'] ),
 		] );
 
 		update_option( BOT_CAT_OPTION_PREFIX . 'telegram', $options );
@@ -72,20 +60,15 @@ class BotCatTelegramAuthApi {
 	 * @param array $request The request data containing the UUID.
 	 *
 	 * @return void
-	 * @throws JsonException
 	 */
 	public function bot_cat_store_uuid( $request ): void {
-
-		$can_access = $this->botCatBasicAuthService->bot_cat_check_key( $request );
-
-		if ( ! $can_access ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json( [ 'Message' => 'Unauthorized' ], 401 );
 		}
 
-		$user_info = $this->botCatBasicAuthService->bot_cat_get_user_by_token( $request );
-
-		if ( $user_info[0] && isset( $user_info[0]->ID ) ) {
-			update_user_meta( $user_info[0]->ID, BOT_CAT_OPTION_PREFIX . 'telegram_uuid', $request['uuid'] );
+		$user_id = get_current_user_id();
+		if ( $user_id && isset( $request['uuid'] ) ) {
+			update_user_meta( $user_id, BOT_CAT_OPTION_PREFIX . 'telegram_uuid', sanitize_text_field( $request['uuid'] ) );
 		}
 
 		wp_send_json( [ 'Message' => 'Success' ], 200 );

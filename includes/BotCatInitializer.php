@@ -9,6 +9,7 @@
 namespace BotCat;
 
 use BotCat\Api\BotCatLineAuthApi;
+use BotCat\Api\BotCatLineWebhookApi;
 use BotCat\Api\BotCatMessageApi;
 use BotCat\Api\BotCatTelegramAuthApi;
 use BotCat\Service\BotCatNotificationService;
@@ -133,6 +134,7 @@ class BotCatInitializer {
 	 */
 	public static function bot_cat_api(): void {
 		add_action( 'rest_api_init', [ BotCatLineAuthApi::class, 'register_rest_route' ] );
+		add_action( 'rest_api_init', [ BotCatLineWebhookApi::class, 'register_rest_route' ] );
 		add_action( 'rest_api_init', [ BotCatTelegramAuthApi::class, 'register_rest_route' ] );
 		add_action( 'rest_api_init', [ BotCatMessageApi::class, 'register_rest_route' ] );
 	}

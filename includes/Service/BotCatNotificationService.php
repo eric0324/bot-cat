@@ -90,6 +90,24 @@ class BotCatNotificationService {
 						$this->bot_cat_telegram_service->bot_cat_send_text_message( $uuids[ $service ]['user'], $messages['user'] );
 					}
 				}
+
+				if ( $service === 'slack' ) {
+					// For Slack, we use webhook so we don't need specific user UUIDs
+					// We send both admin and user messages if there are any recipients configured
+					$has_recipients = ( isset( $uuids[ $service ]['admin'] ) && count( $uuids[ $service ]['admin'] ) > 0 ) ||
+					                  ( isset( $uuids[ $service ]['user'] ) && count( $uuids[ $service ]['user'] ) > 0 );
+					
+					if ( $has_recipients ) {
+						// Send admin message if there are admin recipients
+						if ( isset( $uuids[ $service ]['admin'] ) && count( $uuids[ $service ]['admin'] ) > 0 ) {
+							$this->bot_cat_slack_service->bot_cat_send_text_message( [], $messages['admin'] );
+						}
+						// Send user message if there are user recipients (and it's different from admin message)
+						if ( isset( $uuids[ $service ]['user'] ) && count( $uuids[ $service ]['user'] ) > 0 && $messages['admin'] !== $messages['user'] ) {
+							$this->bot_cat_slack_service->bot_cat_send_text_message( [], $messages['user'] );
+						}
+					}
+				}
 			}
 		}
 	}
