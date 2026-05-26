@@ -16,7 +16,7 @@ namespace BotCat\Foundation;
  */
 class Schema {
 
-	public const TABLES = array( 'subscribers', 'push_jobs', 'push_logs' );
+	public const TABLES = array( 'subscribers', 'push_jobs', 'push_logs', 'tags', 'subscriber_tags' );
 
 	/**
 	 * @return list<string> Fully qualified table names (prefix included).
@@ -105,6 +105,31 @@ CREATE TABLE {$prefix}push_logs (
     KEY job_status (job_id, status),
     KEY subscriber_id (subscriber_id),
     KEY created_at (created_at)
+) {$charset_collate};
+SQL
+,
+			'tags' => <<<SQL
+CREATE TABLE {$prefix}tags (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    slug VARCHAR(64) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    keyword VARCHAR(128) NOT NULL,
+    mapped_categories TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY  (id),
+    UNIQUE KEY slug (slug),
+    KEY keyword (keyword)
+) {$charset_collate};
+SQL
+,
+			'subscriber_tags' => <<<SQL
+CREATE TABLE {$prefix}subscriber_tags (
+    subscriber_id BIGINT UNSIGNED NOT NULL,
+    tag_id BIGINT UNSIGNED NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY  (subscriber_id, tag_id),
+    KEY tag_subscriber (tag_id, subscriber_id)
 ) {$charset_collate};
 SQL
 ,

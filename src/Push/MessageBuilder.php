@@ -7,22 +7,33 @@ declare(strict_types=1);
 
 namespace BotCat\Push;
 
+use BotCat\Flex\FlexMessageBuilder;
+use BotCat\Flex\FlexTemplateRepository;
+use BotCat\Foundation\Edition;
 use BotCat\Template\TemplateRenderer;
 use BotCat\Template\TemplateRepository;
+use Throwable;
 
 /**
  * Produces the LINE message payload for a given push job.
  *
- * Real publishes render the stored template (message-template
- * capability). Test pushes use a canned probe message. W4's
- * flex-message capability can override the whole payload via the
- * `botcat_push_messages` filter.
+ * Edition behavior:
+ *  - Test jobs always render a canned probe message.
+ *  - Pro builds render the Flex template; any exception inside the
+ *    Flex builder fires `botcat_flex_render_failed` and we fall through
+ *    to the free-edition text template so delivery still happens.
+ *  - Free builds render the text template.
+ *
+ * Either result can be overridden by the `botcat_push_messages` filter.
  */
 class MessageBuilder {
 
 	public function __construct(
 		private readonly ?TemplateRepository $templates = null,
-		private readonly ?TemplateRenderer $renderer = null
+		private readonly ?TemplateRenderer $renderer = null,
+		private readonly ?FlexTemplateRepository $flex_templates = null,
+		private readonly ?FlexMessageBuilder $flex_builder = null,
+		private readonly ?Edition $edition = null
 	) {
 	}
 
@@ -42,24 +53,60 @@ class MessageBuilder {
 			);
 		}
 
-		$text = $this->render_for_post( $job->post_id );
+		if ( $this->should_attempt_flex() ) {
+			$flex = $this->build_flex( $job );
+			if ( $flex !== null ) {
+				return $this->filtered( $job, array( $flex ) );
+			}
+		}
+
+		return $this->filtered( $job, array( $this->build_text( $job ) ) );
+	}
+
+	private function should_attempt_flex(): bool {
+		if ( $this->flex_builder === null || $this->flex_templates === null ) {
+			return false;
+		}
+		if ( $this->edition === null ) {
+			return false;
+		}
+		return $this->edition->is_pro();
+	}
+
+	/**
+	 * @return array<string, mixed>|null
+	 */
+	private function build_flex( PushJob $job ): ?array {
+		try {
+			$template = $this->flex_templates->get();
+			$post     = $job->post_id > 0 ? get_post( $job->post_id ) : null;
+			if ( ! is_object( $post ) ) {
+				return null;
+			}
+			return $this->flex_builder->build( $template, $post );
+		} catch ( Throwable $e ) {
+			do_action( 'botcat_flex_render_failed', $job, $e );
+			return null;
+		}
+	}
+
+	/**
+	 * @return array<string, mixed>
+	 */
+	private function build_text( PushJob $job ): array {
+		$text = $this->render_text_for_post( $job->post_id );
 
 		if ( $text === '' ) {
 			$text = (string) __( 'A new post has been published.', 'bot-cat' );
 		}
 
-		return $this->filtered(
-			$job,
-			array(
-				array(
-					'type' => 'text',
-					'text' => $text,
-				),
-			)
+		return array(
+			'type' => 'text',
+			'text' => $text,
 		);
 	}
 
-	private function render_for_post( int $post_id ): string {
+	private function render_text_for_post( int $post_id ): string {
 		if ( $this->templates === null || $this->renderer === null ) {
 			$title = (string) get_the_title( $post_id );
 			$url   = (string) get_permalink( $post_id );

@@ -53,6 +53,28 @@ final class SchemaTest extends TestCase
         $this->assertContains('wp_botcat_push_logs', $tables);
     }
 
+    public function testTagsAndSubscriberTagsTablesAddedInV1Point2(): void
+    {
+        $tables = (new Schema())->tables();
+
+        $this->assertContains('wp_botcat_tags', $tables);
+        $this->assertContains('wp_botcat_subscriber_tags', $tables);
+    }
+
+    public function testTagsTableHasUniqueSlug(): void
+    {
+        $sql = (new Schema())->sql_for('tags');
+
+        $this->assertMatchesRegularExpression('/UNIQUE KEY\s+slug\s*\(\s*slug\s*\)/i', $sql);
+    }
+
+    public function testSubscriberTagsHasCompositePrimaryKey(): void
+    {
+        $sql = (new Schema())->sql_for('subscriber_tags');
+
+        $this->assertMatchesRegularExpression('/PRIMARY KEY\s+\(\s*subscriber_id\s*,\s*tag_id\s*\)/i', $sql);
+    }
+
     public function testPushLogsHasIndexesOnForeignKeysAndJobStatus(): void
     {
         $schema = new Schema();
@@ -90,7 +112,7 @@ final class SchemaTest extends TestCase
     {
         $captured = [];
         Functions\expect('dbDelta')
-            ->times(3)
+            ->times(count(Schema::TABLES))
             ->andReturnUsing(function ($sql) use (&$captured) {
                 $captured[] = $sql;
                 return [];
@@ -99,10 +121,12 @@ final class SchemaTest extends TestCase
         $schema = new Schema();
         $schema->install();
 
-        $this->assertCount(3, $captured);
+        $this->assertCount(count(Schema::TABLES), $captured);
         $joined = implode("\n", $captured);
         $this->assertStringContainsString('wp_botcat_subscribers', $joined);
         $this->assertStringContainsString('wp_botcat_push_jobs', $joined);
         $this->assertStringContainsString('wp_botcat_push_logs', $joined);
+        $this->assertStringContainsString('wp_botcat_tags', $joined);
+        $this->assertStringContainsString('wp_botcat_subscriber_tags', $joined);
     }
 }

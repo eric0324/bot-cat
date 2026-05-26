@@ -65,6 +65,7 @@ class AdminMenu {
 		);
 
 		if ( $this->edition->is_pro() ) {
+			$pages[] = array( 'bot-cat-tags', __( 'Tags', 'bot-cat' ) );
 			$pages[] = array( 'bot-cat-license', __( 'License', 'bot-cat' ) );
 		}
 

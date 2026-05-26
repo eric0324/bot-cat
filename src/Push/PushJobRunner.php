@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace BotCat\Push;
 
 use BotCat\Subscribers\SubscriberRepository;
+use BotCat\Tags\AudienceResolver;
 
 /**
  * Top-level orchestrator for `botcat_push_job_run`.
@@ -27,7 +28,8 @@ class PushJobRunner {
 	public function __construct(
 		private readonly PushJobRepository $jobs,
 		private readonly PushLogRepository $logs,
-		private readonly SubscriberRepository $subscribers
+		private readonly SubscriberRepository $subscribers,
+		private readonly ?AudienceResolver $audience = null
 	) {
 	}
 
@@ -92,13 +94,17 @@ class PushJobRunner {
 			'subscriber_ids' => array(),
 		);
 
-		$iterator = $job->is_test && $custom_user_ids !== array()
-			? ( function () use ( $custom_user_ids ) {
+		if ( $job->is_test && $custom_user_ids !== array() ) {
+			$iterator = ( function () use ( $custom_user_ids ) {
 				foreach ( $custom_user_ids as $id ) {
 					yield (string) $id;
 				}
-			} )()
-			: $this->subscribers->active_ids();
+			} )();
+		} elseif ( $this->audience !== null ) {
+			$iterator = $this->audience->iterator_for_job( $job );
+		} else {
+			$iterator = $this->subscribers->active_ids();
+		}
 
 		foreach ( $iterator as $line_user_id ) {
 			$current['line_user_ids'][]  = $line_user_id;

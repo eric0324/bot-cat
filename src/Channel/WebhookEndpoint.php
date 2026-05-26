@@ -9,6 +9,7 @@ namespace BotCat\Channel;
 
 use BotCat\Subscribers\FollowHandler;
 use BotCat\Subscribers\UnfollowHandler;
+use BotCat\Tags\MessageEventHandler;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -29,7 +30,8 @@ final class WebhookEndpoint {
 	public function __construct(
 		private readonly ChannelSettingsRepository $channel_settings,
 		private readonly FollowHandler $follow,
-		private readonly UnfollowHandler $unfollow
+		private readonly UnfollowHandler $unfollow,
+		private readonly ?MessageEventHandler $messages = null
 	) {
 	}
 
@@ -96,8 +98,23 @@ final class WebhookEndpoint {
 
 		if ( $type === 'follow' ) {
 			$this->follow->handle( $line_user_id, $ts );
-		} elseif ( $type === 'unfollow' ) {
+			return;
+		}
+
+		if ( $type === 'unfollow' ) {
 			$this->unfollow->handle( $line_user_id, $ts );
+			return;
+		}
+
+		if ( $type === 'message' && $this->messages !== null ) {
+			$message = isset( $event['message'] ) && is_array( $event['message'] ) ? $event['message'] : array();
+			$reply   = isset( $event['replyToken'] ) ? (string) $event['replyToken'] : '';
+			$is_text = isset( $message['type'] ) && $message['type'] === 'text';
+			$body    = $is_text && isset( $message['text'] ) ? (string) $message['text'] : '';
+
+			if ( $reply !== '' && $body !== '' ) {
+				$this->messages->handle( $line_user_id, $reply, $body );
+			}
 		}
 	}
 }

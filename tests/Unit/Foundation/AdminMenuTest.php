@@ -58,7 +58,7 @@ final class AdminMenuTest extends TestCase
         $edition->method('is_pro')->willReturn(true);
 
         Functions\expect('add_menu_page')->once();
-        Functions\expect('add_submenu_page')->times(6);
+        Functions\expect('add_submenu_page')->times(7);
 
         $menu = new AdminMenu($edition);
         $menu->register();

@@ -105,6 +105,18 @@ class PushJobRepository {
 		);
 	}
 
+	public function set_last_error( int $id, string $error ): void {
+		global $wpdb;
+
+		$wpdb->update(
+			$wpdb->prefix . self::TABLE,
+			array( 'last_error' => $error ),
+			array( 'id' => $id ),
+			array( '%s' ),
+			array( '%d' )
+		);
+	}
+
 	public function increment_counts( int $id, int $sent_delta, int $failed_delta ): void {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE;

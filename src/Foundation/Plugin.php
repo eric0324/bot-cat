@@ -9,13 +9,18 @@ namespace BotCat\Foundation;
 
 use BotCat\Channel\ChannelSettingsRepository;
 use BotCat\Channel\CredentialEncryptor;
+use BotCat\Channel\ReplyClient;
 use BotCat\Channel\SettingsPage as ChannelSettingsPage;
 use BotCat\Channel\WebhookEndpoint;
+use BotCat\Flex\FlexMessageBuilder;
+use BotCat\Flex\FlexTemplateRepository;
+use BotCat\Flex\HeroImageResolver;
 use BotCat\Push\BatchRunner;
 use BotCat\Push\EligiblePostTypes;
 use BotCat\Push\MessageBuilder;
 use BotCat\Push\MulticastClient;
 use BotCat\Push\PostPublishObserver;
+use BotCat\Push\PushJob;
 use BotCat\Push\PushJobDetailPage;
 use BotCat\Push\PushJobRepository;
 use BotCat\Push\PushJobRunner;
@@ -32,10 +37,19 @@ use BotCat\Subscribers\LineProfileFetcher;
 use BotCat\Subscribers\SubscriberRepository;
 use BotCat\Subscribers\SubscribersPage;
 use BotCat\Subscribers\UnfollowHandler;
+use BotCat\Tags\AudienceResolver;
+use BotCat\Tags\MessageEventHandler;
+use BotCat\Tags\SubscriberTagRepository;
+use BotCat\Tags\TagCommandHandler;
+use BotCat\Tags\TagCommandParser;
+use BotCat\Tags\TagRepository;
+use BotCat\Tags\TagsPage;
+use BotCat\Tags\WelcomeMessageBuilder;
 use BotCat\Template\TemplatePage;
 use BotCat\Template\TemplateRenderer;
 use BotCat\Template\TemplateRepository;
 use BotCat\Template\TokenResolver;
+use Throwable;
 
 /**
  * Central bootstrap: instantiates feature classes and wires them to
@@ -71,16 +85,23 @@ final class Plugin {
 		$cron = new RetentionCron();
 		add_action( Activator::CRON_HOOK, array( $cron, 'run' ) );
 
-		$channel_repo = $this->channel_repository();
-		$jobs         = new PushJobRepository();
-		$logs         = new PushLogRepository();
-		$subscribers  = new SubscriberRepository();
+		$channel_repo    = $this->channel_repository();
+		$jobs            = new PushJobRepository();
+		$logs            = new PushLogRepository();
+		$subscribers     = new SubscriberRepository();
+		$tags            = new TagRepository();
+		$subscriber_tags = new SubscriberTagRepository();
 
 		// Templates.
 		$template_repo     = new TemplateRepository();
 		$template_renderer = new TemplateRenderer( new TokenResolver() );
 
-		// Push rules.
+		// Pro Flex template.
+		$flex_template_repo = new FlexTemplateRepository();
+		$flex_builder       = new FlexMessageBuilder( $template_renderer, new HeroImageResolver() );
+
+		// Edition + rules.
+		$edition   = new Edition();
 		$eligible  = new EligiblePostTypes();
 		$excluded  = new ExcludedCategories();
 		$opt_out   = new PerPostOptOut();
@@ -88,11 +109,11 @@ final class Plugin {
 		$rules_tab = new RulesSettingsTab( $eligible, $excluded );
 		add_action( 'admin_init', array( $rules_tab, 'register_settings' ) );
 
-		// Scheduler with throttle.
+		// Push scheduler with throttle.
 		$scheduler = new PushJobScheduler( $jobs, $throttle );
 
-		// Template editor page.
-		$template_page = new TemplatePage( $template_repo, $template_renderer, $eligible );
+		// Template editor page (with Pro Flex tab).
+		$template_page = new TemplatePage( $template_repo, $template_renderer, $eligible, $edition, $flex_template_repo );
 		add_action( 'admin_init', array( $template_page, 'register_settings' ) );
 
 		// Channel settings page (with rules tab + send test).
@@ -120,25 +141,49 @@ final class Plugin {
 		$push_detail_page = new PushJobDetailPage( $jobs, $logs );
 		add_action( 'admin_post_' . PushJobDetailPage::RESEND_ACTION, array( $push_detail_page, 'handle_resend' ) );
 
+		// Pro: Tags admin page.
+		$tags_page = new TagsPage( $tags );
+		add_action( 'admin_post_' . TagsPage::ACTION_SAVE, array( $tags_page, 'handle_save' ) );
+		add_action( 'admin_post_' . TagsPage::ACTION_DELETE, array( $tags_page, 'handle_delete' ) );
+
 		// Top-level menu.
-		$edition = new Edition();
-		$menu    = new AdminMenu(
-			$edition,
-			array(
-				'bot-cat-subscribers' => array( $subscribers_page, 'render' ),
-				'bot-cat-templates'   => array( $template_page, 'render' ),
-				'bot-cat-logs'        => array( $push_logs_page, 'render' ),
-				'bot-cat-settings'    => array( $settings_page, 'render' ),
-			)
+		$menu_renderers = array(
+			'bot-cat-subscribers' => array( $subscribers_page, 'render' ),
+			'bot-cat-templates'   => array( $template_page, 'render' ),
+			'bot-cat-logs'        => array( $push_logs_page, 'render' ),
+			'bot-cat-settings'    => array( $settings_page, 'render' ),
 		);
+		if ( $edition->is_pro() ) {
+			$menu_renderers['bot-cat-tags'] = array( $tags_page, 'render' );
+		}
+		$menu = new AdminMenu( $edition, $menu_renderers );
 		add_action( 'admin_menu', array( $menu, 'register' ) );
 
-		// Webhook + subscriber event handlers.
+		// Webhook + subscriber + tag event handlers.
 		$profile_fetcher  = new LineProfileFetcher();
-		$follow_handler   = new FollowHandler( $subscribers, $channel_repo, $profile_fetcher );
+		$reply_client     = new ReplyClient();
+		$welcome          = new WelcomeMessageBuilder( $tags );
+		$follow_handler   = new FollowHandler(
+			$subscribers,
+			$channel_repo,
+			$profile_fetcher,
+			$edition->is_pro() ? $welcome : null,
+			$edition->is_pro() ? $reply_client : null
+		);
 		$unfollow_handler = new UnfollowHandler( $subscribers );
 
-		$webhook = new WebhookEndpoint( $channel_repo, $follow_handler, $unfollow_handler );
+		$message_handler = null;
+		if ( $edition->is_pro() ) {
+			$command_handler = new TagCommandHandler( $tags, $subscriber_tags, $subscribers );
+			$message_handler = new MessageEventHandler(
+				new TagCommandParser(),
+				$command_handler,
+				$channel_repo,
+				$reply_client
+			);
+		}
+
+		$webhook = new WebhookEndpoint( $channel_repo, $follow_handler, $unfollow_handler, $message_handler );
 		add_action( 'rest_api_init', array( $webhook, 'register' ) );
 
 		add_action(
@@ -148,12 +193,17 @@ final class Plugin {
 			}
 		);
 
-		// Publish observer (consults eligibility + excluded categories + per-post opt-out).
+		// Publish observer.
 		$observer = new PostPublishObserver( $eligible, $scheduler, $excluded, $opt_out );
 		add_action( 'transition_post_status', array( $observer, 'on_transition' ), 10, 3 );
 
+		// Pro: tag-aware audience.
+		$audience = $edition->is_pro()
+			? new AudienceResolver( $subscribers, $tags, $subscriber_tags )
+			: null;
+
 		// Push runners.
-		$job_runner = new PushJobRunner( $jobs, $logs, $subscribers );
+		$job_runner = new PushJobRunner( $jobs, $logs, $subscribers, $audience );
 		add_action(
 			PushJobScheduler::ACTION_RUN_JOB,
 			static function ( $job_id, $custom_user_ids = array() ) use ( $job_runner ): void {
@@ -164,8 +214,32 @@ final class Plugin {
 			2
 		);
 
-		$message_builder = new MessageBuilder( $template_repo, $template_renderer );
-		$batch_runner    = new BatchRunner(
+		$message_builder = new MessageBuilder(
+			$template_repo,
+			$template_renderer,
+			$edition->is_pro() ? $flex_template_repo : null,
+			$edition->is_pro() ? $flex_builder : null,
+			$edition
+		);
+
+		// Surface Flex render failures on the Push Job detail page.
+		add_action(
+			'botcat_flex_render_failed',
+			static function ( PushJob $job, Throwable $exception ) use ( $jobs ): void {
+				$jobs->set_last_error(
+					$job->id,
+					sprintf(
+						/* translators: %s: underlying exception message. */
+						__( 'Flex template failed — sent as text: %s', 'bot-cat' ),
+						$exception->getMessage()
+					)
+				);
+			},
+			10,
+			2
+		);
+
+		$batch_runner = new BatchRunner(
 			$jobs,
 			$logs,
 			$channel_repo,
