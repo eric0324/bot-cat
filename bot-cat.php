@@ -25,7 +25,7 @@ if ( defined( 'BOT_CAT_FILE' ) ) {
 define( 'BOT_CAT_FILE', __FILE__ );
 define( 'BOT_CAT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BOT_CAT_URL', plugin_dir_url( __FILE__ ) );
-define( 'BOT_CAT_VERSION', '1.2.0' );
+define( 'BOT_CAT_VERSION', '1.3.0' );
 define( 'BOT_CAT_MIN_PHP', '8.1' );
 define( 'BOT_CAT_MIN_WP', '7.0' );
 

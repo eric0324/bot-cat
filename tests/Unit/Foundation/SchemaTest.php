@@ -128,5 +128,7 @@ final class SchemaTest extends TestCase
         $this->assertStringContainsString('wp_botcat_push_logs', $joined);
         $this->assertStringContainsString('wp_botcat_tags', $joined);
         $this->assertStringContainsString('wp_botcat_subscriber_tags', $joined);
+        $this->assertStringContainsString('wp_botcat_short_links', $joined);
+        $this->assertStringContainsString('wp_botcat_short_link_clicks', $joined);
     }
 }

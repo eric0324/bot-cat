@@ -10,6 +10,7 @@ namespace BotCat\Push;
 use BotCat\Flex\FlexMessageBuilder;
 use BotCat\Flex\FlexTemplateRepository;
 use BotCat\Foundation\Edition;
+use BotCat\Shortener\LinkRewriter;
 use BotCat\Template\TemplateRenderer;
 use BotCat\Template\TemplateRepository;
 use Throwable;
@@ -33,7 +34,8 @@ class MessageBuilder {
 		private readonly ?TemplateRenderer $renderer = null,
 		private readonly ?FlexTemplateRepository $flex_templates = null,
 		private readonly ?FlexMessageBuilder $flex_builder = null,
-		private readonly ?Edition $edition = null
+		private readonly ?Edition $edition = null,
+		private readonly ?LinkRewriter $link_rewriter = null
 	) {
 	}
 
@@ -56,11 +58,39 @@ class MessageBuilder {
 		if ( $this->should_attempt_flex() ) {
 			$flex = $this->build_flex( $job );
 			if ( $flex !== null ) {
-				return $this->filtered( $job, array( $flex ) );
+				return $this->filtered( $job, $this->rewrite_messages( array( $flex ), $job ) );
 			}
 		}
 
-		return $this->filtered( $job, array( $this->build_text( $job ) ) );
+		return $this->filtered( $job, $this->rewrite_messages( array( $this->build_text( $job ) ), $job ) );
+	}
+
+	/**
+	 * @param list<array<string, mixed>> $messages
+	 * @return list<array<string, mixed>>
+	 */
+	private function rewrite_messages( array $messages, PushJob $job ): array {
+		if ( $this->link_rewriter === null || $job->post_id <= 0 ) {
+			return $messages;
+		}
+
+		$permalink = (string) get_permalink( $job->post_id );
+		if ( $permalink === '' ) {
+			return $messages;
+		}
+
+		return array_map(
+			function ( array $msg ) use ( $job, $permalink ): array {
+				$json = wp_json_encode( $msg, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+				if ( ! is_string( $json ) ) {
+					return $msg;
+				}
+				$rewritten = $this->link_rewriter->rewrite( $json, $job->post_id, $permalink );
+				$decoded   = json_decode( $rewritten, true );
+				return is_array( $decoded ) ? $decoded : $msg;
+			},
+			$messages
+		);
 	}
 
 	private function should_attempt_flex(): bool {

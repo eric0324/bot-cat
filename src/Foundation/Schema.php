@@ -16,7 +16,7 @@ namespace BotCat\Foundation;
  */
 class Schema {
 
-	public const TABLES = array( 'subscribers', 'push_jobs', 'push_logs', 'tags', 'subscriber_tags' );
+	public const TABLES = array( 'subscribers', 'push_jobs', 'push_logs', 'tags', 'subscriber_tags', 'short_links', 'short_link_clicks' );
 
 	/**
 	 * @return list<string> Fully qualified table names (prefix included).
@@ -130,6 +130,34 @@ CREATE TABLE {$prefix}subscriber_tags (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY  (subscriber_id, tag_id),
     KEY tag_subscriber (tag_id, subscriber_id)
+) {$charset_collate};
+SQL
+,
+			'short_links' => <<<SQL
+CREATE TABLE {$prefix}short_links (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    code VARCHAR(12) NOT NULL,
+    post_id BIGINT UNSIGNED NOT NULL,
+    original_url TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY  (id),
+    UNIQUE KEY code (code),
+    KEY post_id (post_id)
+) {$charset_collate};
+SQL
+,
+			'short_link_clicks' => <<<SQL
+CREATE TABLE {$prefix}short_link_clicks (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    short_link_id BIGINT UNSIGNED NOT NULL,
+    subscriber_id BIGINT UNSIGNED NULL,
+    ip_hash CHAR(64) NOT NULL,
+    user_agent VARCHAR(255) NULL,
+    referer VARCHAR(255) NULL,
+    clicked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY  (id),
+    KEY short_link_id (short_link_id, clicked_at),
+    KEY ip_hash (ip_hash)
 ) {$charset_collate};
 SQL
 ,

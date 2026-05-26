@@ -15,6 +15,11 @@ use BotCat\Channel\WebhookEndpoint;
 use BotCat\Flex\FlexMessageBuilder;
 use BotCat\Flex\FlexTemplateRepository;
 use BotCat\Flex\HeroImageResolver;
+use BotCat\Analytics\CsvExporter;
+use BotCat\Analytics\DashboardKpiCalculator;
+use BotCat\Analytics\DashboardPage;
+use BotCat\Analytics\PostPerformanceQuery;
+use BotCat\Analytics\SubscriberGrowthQuery;
 use BotCat\Push\BatchRunner;
 use BotCat\Push\EligiblePostTypes;
 use BotCat\Push\MessageBuilder;
@@ -44,6 +49,14 @@ use BotCat\Tags\TagCommandHandler;
 use BotCat\Tags\TagCommandParser;
 use BotCat\Tags\TagRepository;
 use BotCat\Tags\TagsPage;
+use BotCat\Shortener\ClickLogRepository;
+use BotCat\Shortener\ClickRedirectHandler;
+use BotCat\Shortener\LinkRewriter;
+use BotCat\Shortener\RewriteRuleRegistrar;
+use BotCat\Shortener\ShortCodeGenerator;
+use BotCat\Shortener\ShortLinkRepository;
+use BotCat\Shortener\ShortLinksPage;
+use BotCat\Shortener\SubscriberTokenSigner;
 use BotCat\Tags\WelcomeMessageBuilder;
 use BotCat\Template\TemplatePage;
 use BotCat\Template\TemplateRenderer;
@@ -146,15 +159,47 @@ final class Plugin {
 		add_action( 'admin_post_' . TagsPage::ACTION_SAVE, array( $tags_page, 'handle_save' ) );
 		add_action( 'admin_post_' . TagsPage::ACTION_DELETE, array( $tags_page, 'handle_delete' ) );
 
+		// Pro: short link infrastructure.
+		$short_links   = new ShortLinkRepository( new ShortCodeGenerator() );
+		$click_log     = new ClickLogRepository();
+		$token_signer  = new SubscriberTokenSigner( defined( 'AUTH_KEY' ) && AUTH_KEY !== '' ? AUTH_KEY : 'bot-cat-fallback-key' );
+		$short_base    = function_exists( 'home_url' ) ? (string) home_url( '/l/' ) : '/l/';
+		$link_rewriter = new LinkRewriter( $short_links, function_exists( 'home_url' ) ? (string) home_url() : '', $short_base );
+
+		if ( $edition->is_pro() ) {
+			$redirect_handler  = new ClickRedirectHandler( $short_links, $click_log, $token_signer, defined( 'AUTH_KEY' ) && AUTH_KEY !== '' ? AUTH_KEY : 'bot-cat-fallback-salt' );
+			$rewrite_registrar = new RewriteRuleRegistrar( $redirect_handler );
+			add_action( 'init', array( $rewrite_registrar, 'register_rewrite' ) );
+			add_filter( 'query_vars', array( $rewrite_registrar, 'register_query_var' ) );
+			add_action( 'template_redirect', array( $rewrite_registrar, 'dispatch' ) );
+		}
+
+		$short_links_page = new ShortLinksPage( $short_links, $click_log, $short_base );
+
+		// Pro: analytics dashboard.
+		$dashboard_page = new DashboardPage(
+			new DashboardKpiCalculator(),
+			new PostPerformanceQuery(),
+			new SubscriberGrowthQuery(),
+			new CsvExporter()
+		);
+		add_action( 'admin_post_' . DashboardPage::CSV_ACTION, array( $dashboard_page, 'handle_csv' ) );
+
 		// Top-level menu.
+		$default_landing = $edition->is_pro()
+			? array( $dashboard_page, 'render' )
+			: array( $subscribers_page, 'render' );
+
 		$menu_renderers = array(
+			'bot-cat'             => $default_landing,
 			'bot-cat-subscribers' => array( $subscribers_page, 'render' ),
 			'bot-cat-templates'   => array( $template_page, 'render' ),
 			'bot-cat-logs'        => array( $push_logs_page, 'render' ),
 			'bot-cat-settings'    => array( $settings_page, 'render' ),
 		);
 		if ( $edition->is_pro() ) {
-			$menu_renderers['bot-cat-tags'] = array( $tags_page, 'render' );
+			$menu_renderers['bot-cat-tags']        = array( $tags_page, 'render' );
+			$menu_renderers['bot-cat-short-links'] = array( $short_links_page, 'render' );
 		}
 		$menu = new AdminMenu( $edition, $menu_renderers );
 		add_action( 'admin_menu', array( $menu, 'register' ) );
@@ -219,7 +264,8 @@ final class Plugin {
 			$template_renderer,
 			$edition->is_pro() ? $flex_template_repo : null,
 			$edition->is_pro() ? $flex_builder : null,
-			$edition
+			$edition,
+			$edition->is_pro() ? $link_rewriter : null
 		);
 
 		// Surface Flex render failures on the Push Job detail page.
