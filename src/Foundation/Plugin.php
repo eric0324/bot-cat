@@ -23,11 +23,19 @@ use BotCat\Push\PushJobScheduler;
 use BotCat\Push\PushLogRepository;
 use BotCat\Push\PushLogsPage;
 use BotCat\Push\RetryPolicy;
+use BotCat\Rules\ExcludedCategories;
+use BotCat\Rules\PerPostOptOut;
+use BotCat\Rules\PushThrottle;
+use BotCat\Rules\RulesSettingsTab;
 use BotCat\Subscribers\FollowHandler;
 use BotCat\Subscribers\LineProfileFetcher;
 use BotCat\Subscribers\SubscriberRepository;
 use BotCat\Subscribers\SubscribersPage;
 use BotCat\Subscribers\UnfollowHandler;
+use BotCat\Template\TemplatePage;
+use BotCat\Template\TemplateRenderer;
+use BotCat\Template\TemplateRepository;
+use BotCat\Template\TokenResolver;
 
 /**
  * Central bootstrap: instantiates feature classes and wires them to
@@ -67,19 +75,47 @@ final class Plugin {
 		$jobs         = new PushJobRepository();
 		$logs         = new PushLogRepository();
 		$subscribers  = new SubscriberRepository();
-		$scheduler    = new PushJobScheduler( $jobs );
 
-		// Channel settings UI.
+		// Templates.
+		$template_repo     = new TemplateRepository();
+		$template_renderer = new TemplateRenderer( new TokenResolver() );
+
+		// Push rules.
+		$eligible  = new EligiblePostTypes();
+		$excluded  = new ExcludedCategories();
+		$opt_out   = new PerPostOptOut();
+		$throttle  = new PushThrottle();
+		$rules_tab = new RulesSettingsTab( $eligible, $excluded );
+		add_action( 'admin_init', array( $rules_tab, 'register_settings' ) );
+
+		// Scheduler with throttle.
+		$scheduler = new PushJobScheduler( $jobs, $throttle );
+
+		// Template editor page.
+		$template_page = new TemplatePage( $template_repo, $template_renderer, $eligible );
+		add_action( 'admin_init', array( $template_page, 'register_settings' ) );
+
+		// Channel settings page (with rules tab + send test).
 		$settings_page = new ChannelSettingsPage( $channel_repo );
 		$settings_page->set_push_scheduler( $scheduler );
+		$settings_page->set_rules_tab( $rules_tab );
 		add_action( 'admin_init', array( $settings_page, 'register_settings' ) );
 		add_action( 'admin_post_botcat_test_connection', array( $settings_page, 'handle_test_connection' ) );
 		add_action( 'admin_post_' . ChannelSettingsPage::SEND_TEST_ACTION, array( $settings_page, 'handle_send_test' ) );
 
-		// Subscribers pages.
-		$subscribers_page = new SubscribersPage( $subscribers );
+		// Per-post opt-out metabox.
+		add_action(
+			'add_meta_boxes',
+			function () use ( $opt_out, $eligible ): void {
+				foreach ( $eligible->get() as $post_type ) {
+					$opt_out->register_meta_box( $post_type );
+				}
+			}
+		);
+		add_action( 'save_post', array( $opt_out, 'on_save_post' ) );
 
-		// Push logs pages.
+		// Subscribers + push log pages.
+		$subscribers_page = new SubscribersPage( $subscribers );
 		$push_logs_page   = new PushLogsPage( $jobs, $logs );
 		$push_detail_page = new PushJobDetailPage( $jobs, $logs );
 		add_action( 'admin_post_' . PushJobDetailPage::RESEND_ACTION, array( $push_detail_page, 'handle_resend' ) );
@@ -90,6 +126,7 @@ final class Plugin {
 			$edition,
 			array(
 				'bot-cat-subscribers' => array( $subscribers_page, 'render' ),
+				'bot-cat-templates'   => array( $template_page, 'render' ),
 				'bot-cat-logs'        => array( $push_logs_page, 'render' ),
 				'bot-cat-settings'    => array( $settings_page, 'render' ),
 			)
@@ -111,11 +148,11 @@ final class Plugin {
 			}
 		);
 
-		// Push pipeline.
-		$eligible = new EligiblePostTypes();
-		$observer = new PostPublishObserver( $eligible, $scheduler );
+		// Publish observer (consults eligibility + excluded categories + per-post opt-out).
+		$observer = new PostPublishObserver( $eligible, $scheduler, $excluded, $opt_out );
 		add_action( 'transition_post_status', array( $observer, 'on_transition' ), 10, 3 );
 
+		// Push runners.
 		$job_runner = new PushJobRunner( $jobs, $logs, $subscribers );
 		add_action(
 			PushJobScheduler::ACTION_RUN_JOB,
@@ -127,13 +164,14 @@ final class Plugin {
 			2
 		);
 
-		$batch_runner = new BatchRunner(
+		$message_builder = new MessageBuilder( $template_repo, $template_renderer );
+		$batch_runner    = new BatchRunner(
 			$jobs,
 			$logs,
 			$channel_repo,
 			new MulticastClient(),
 			new RetryPolicy(),
-			new MessageBuilder()
+			$message_builder
 		);
 		add_action(
 			PushJobScheduler::ACTION_RUN_BATCH,

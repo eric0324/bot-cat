@@ -22,15 +22,24 @@ class SettingsPage {
 	public const NONCE_ACTION     = 'botcat_test_connection';
 	public const SEND_TEST_NONCE  = 'botcat_send_test_push';
 	public const SEND_TEST_ACTION = 'botcat_send_test_push';
+	public const TAB_CHANNEL      = 'channel';
+	public const TAB_RULES        = 'rules';
 
 	/** @var \BotCat\Push\PushJobScheduler|null */
 	private ?\BotCat\Push\PushJobScheduler $push_scheduler = null;
+
+	/** @var \BotCat\Rules\RulesSettingsTab|null */
+	private ?\BotCat\Rules\RulesSettingsTab $rules_tab = null;
 
 	public function __construct( private readonly ChannelSettingsRepository $repository ) {
 	}
 
 	public function set_push_scheduler( \BotCat\Push\PushJobScheduler $scheduler ): void {
 		$this->push_scheduler = $scheduler;
+	}
+
+	public function set_rules_tab( \BotCat\Rules\RulesSettingsTab $rules_tab ): void {
+		$this->rules_tab = $rules_tab;
 	}
 
 	public function register_settings(): void {
@@ -136,21 +145,61 @@ class SettingsPage {
 			wp_die( esc_html__( 'Insufficient permissions.', 'bot-cat' ), '', array( 'response' => 403 ) );
 		}
 
-		$this->render_test_result_banner();
+		$tab = $this->current_tab();
 
 		echo '<div class="wrap">';
 		echo '<h1>' . esc_html__( 'bot-cat Settings', 'bot-cat' ) . '</h1>';
 
-		echo '<form method="post" action="options.php">';
-		settings_fields( self::OPTION_GROUP );
-		do_settings_sections( 'bot-cat-settings' );
-		submit_button();
-		echo '</form>';
+		$this->render_tab_nav( $tab );
 
-		$this->render_test_connection_form();
-		$this->render_send_test_form();
+		if ( $tab === self::TAB_RULES && $this->rules_tab !== null ) {
+			$this->rules_tab->render();
+		} else {
+			$this->render_test_result_banner();
+
+			echo '<form method="post" action="options.php">';
+			settings_fields( self::OPTION_GROUP );
+			do_settings_sections( 'bot-cat-settings' );
+			submit_button();
+			echo '</form>';
+
+			$this->render_test_connection_form();
+			$this->render_send_test_form();
+		}
 
 		echo '</div>';
+	}
+
+	private function current_tab(): string {
+		$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( (string) $_GET['tab'] ) ) : self::TAB_CHANNEL; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		return $tab === self::TAB_RULES ? self::TAB_RULES : self::TAB_CHANNEL;
+	}
+
+	private function render_tab_nav( string $current ): void {
+		$tabs = array(
+			self::TAB_CHANNEL => __( 'Channel', 'bot-cat' ),
+			self::TAB_RULES   => __( 'Push rules', 'bot-cat' ),
+		);
+
+		echo '<nav class="nav-tab-wrapper">';
+		foreach ( $tabs as $slug => $label ) {
+			$url = add_query_arg(
+				array(
+					'page' => 'bot-cat-settings',
+					'tab'  => $slug,
+				),
+				admin_url( 'admin.php' )
+			);
+
+			printf(
+				'<a href="%1$s" class="nav-tab%2$s">%3$s</a>',
+				esc_url( $url ),
+				$current === $slug ? ' nav-tab-active' : '',
+				esc_html( $label )
+			);
+		}
+		echo '</nav>';
 	}
 
 	private function render_send_test_form(): void {
@@ -177,7 +226,7 @@ class SettingsPage {
 
 		check_admin_referer( self::SEND_TEST_NONCE );
 
-		$raw = isset( $_POST['user_ids'] ) ? (string) wp_unslash( $_POST['user_ids'] ) : '';
+		$raw    = isset( $_POST['user_ids'] ) ? (string) wp_unslash( $_POST['user_ids'] ) : '';
 		$tokens = preg_split( '/[\s,]+/', $raw );
 		if ( ! is_array( $tokens ) ) {
 			$tokens = array();

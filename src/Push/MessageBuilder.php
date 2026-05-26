@@ -7,54 +7,81 @@ declare(strict_types=1);
 
 namespace BotCat\Push;
 
+use BotCat\Template\TemplateRenderer;
+use BotCat\Template\TemplateRepository;
+
 /**
  * Produces the LINE message payload for a given push job.
  *
- * Default (W2) implementation emits a plain text message with the post
- * title and permalink. W3 will swap in a Templates-based builder via the
- * `botcat_message_builder` filter without disturbing this contract.
+ * Real publishes render the stored template (message-template
+ * capability). Test pushes use a canned probe message. W4's
+ * flex-message capability can override the whole payload via the
+ * `botcat_push_messages` filter.
  */
 class MessageBuilder {
+
+	public function __construct(
+		private readonly ?TemplateRepository $templates = null,
+		private readonly ?TemplateRenderer $renderer = null
+	) {
+	}
 
 	/**
 	 * @return list<array<string, mixed>>
 	 */
 	public function build_for_job( PushJob $job ): array {
 		if ( $job->is_test ) {
-			return array(
+			return $this->filtered(
+				$job,
 				array(
-					'type' => 'text',
-					'text' => __( 'bot-cat connection test — if you see this, your channel is wired up correctly.', 'bot-cat' ),
-				),
+					array(
+						'type' => 'text',
+						'text' => __( 'bot-cat connection test — if you see this, your channel is wired up correctly.', 'bot-cat' ),
+					),
+				)
 			);
 		}
 
-		$title = (string) get_the_title( $job->post_id );
-		$url   = (string) get_permalink( $job->post_id );
+		$text = $this->render_for_post( $job->post_id );
 
-		if ( $title === '' && $url === '' ) {
-			return array(
-				array(
-					'type' => 'text',
-					'text' => __( 'A new post has been published.', 'bot-cat' ),
-				),
-			);
+		if ( $text === '' ) {
+			$text = (string) __( 'A new post has been published.', 'bot-cat' );
 		}
 
-		$body = trim( $title . "\n" . $url );
-
-		/** @var list<array<string, mixed>> $messages */
-		$messages = apply_filters(
-			'botcat_push_messages',
+		return $this->filtered(
+			$job,
 			array(
 				array(
 					'type' => 'text',
-					'text' => $body,
+					'text' => $text,
 				),
-			),
-			$job
+			)
 		);
+	}
 
-		return $messages;
+	private function render_for_post( int $post_id ): string {
+		if ( $this->templates === null || $this->renderer === null ) {
+			$title = (string) get_the_title( $post_id );
+			$url   = (string) get_permalink( $post_id );
+			return trim( $title . "\n" . $url );
+		}
+
+		$post = get_post( $post_id );
+		if ( ! is_object( $post ) ) {
+			return '';
+		}
+
+		return $this->renderer->render( $this->templates->get(), $post );
+	}
+
+	/**
+	 * @param list<array<string, mixed>> $messages
+	 * @return list<array<string, mixed>>
+	 */
+	private function filtered( PushJob $job, array $messages ): array {
+		/** @var list<array<string, mixed>> $filtered */
+		$filtered = apply_filters( 'botcat_push_messages', $messages, $job );
+
+		return is_array( $filtered ) ? $filtered : $messages;
 	}
 }

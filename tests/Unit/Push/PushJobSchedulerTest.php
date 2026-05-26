@@ -9,6 +9,7 @@ namespace BotCat\Tests\Unit\Push;
 
 use BotCat\Push\PushJobRepository;
 use BotCat\Push\PushJobScheduler;
+use BotCat\Rules\PushThrottle;
 use BotCat\Tests\TestCase;
 use Brain\Monkey\Functions;
 
@@ -33,6 +34,40 @@ final class PushJobSchedulerTest extends TestCase
         $id = $scheduler->enqueue(42, 'post');
 
         $this->assertSame(99, $id);
+    }
+
+    public function testThrottleScheduledTimeReplacesImmediateTime(): void
+    {
+        $repo = $this->createMock(PushJobRepository::class);
+        $repo->method('create_pending')->willReturn(99);
+
+        $throttle = $this->createMock(PushThrottle::class);
+        $throttle->expects($this->once())->method('next_slot')->willReturn(1_800_000_000);
+
+        Functions\expect('as_schedule_single_action')->once()
+            ->with(
+                $this->equalTo(1_800_000_000),
+                PushJobScheduler::ACTION_RUN_JOB,
+                $this->equalTo([99]),
+                PushJobScheduler::GROUP
+            );
+
+        (new PushJobScheduler($repo, $throttle))->enqueue(42, 'post');
+    }
+
+    public function testTestPushBypassesThrottle(): void
+    {
+        $repo = $this->createMock(PushJobRepository::class);
+        $repo->method('create_pending')->willReturn(99);
+
+        $throttle = $this->createMock(PushThrottle::class);
+        $throttle->expects($this->never())->method('next_slot');
+
+        Functions\expect('as_schedule_single_action')->once();
+
+        (new PushJobScheduler($repo, $throttle))->enqueue(42, 'post', is_test: true);
+
+        $this->assertTrue(true);
     }
 
     public function testEnqueueTestPushFlagsTheJob(): void

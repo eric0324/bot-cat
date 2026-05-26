@@ -35,6 +35,7 @@ abstract class TestCase extends PHPUnitTestCase
             'wp_kses_post'   => static fn($s) => $s,
             'sanitize_text_field' => static fn($s) => $s,
             'sanitize_key'   => static fn(string $key): string => strtolower(preg_replace('/[^a-z0-9_]/i', '', $key)),
+            'wp_strip_all_tags' => static fn(string $s, bool $remove_breaks = false): string => trim(strip_tags($s)),
         ]);
     }
 

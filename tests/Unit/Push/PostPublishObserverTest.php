@@ -10,6 +10,8 @@ namespace BotCat\Tests\Unit\Push;
 use BotCat\Push\EligiblePostTypes;
 use BotCat\Push\PostPublishObserver;
 use BotCat\Push\PushJobScheduler;
+use BotCat\Rules\ExcludedCategories;
+use BotCat\Rules\PerPostOptOut;
 use BotCat\Tests\TestCase;
 
 /**
@@ -77,6 +79,36 @@ final class PostPublishObserverTest extends TestCase
 
         (new PostPublishObserver($eligible, $scheduler))
             ->on_transition('publish', 'future', $this->post(7, 'post'));
+    }
+
+    public function testExcludedCategorySuppressesEnqueue(): void
+    {
+        $eligible = $this->createMock(EligiblePostTypes::class);
+        $eligible->method('is_eligible')->willReturn(true);
+
+        $excluded = $this->createMock(ExcludedCategories::class);
+        $excluded->method('is_excluded')->with(42)->willReturn(true);
+
+        $scheduler = $this->createMock(PushJobScheduler::class);
+        $scheduler->expects($this->never())->method('enqueue');
+
+        (new PostPublishObserver($eligible, $scheduler, $excluded))
+            ->on_transition('publish', 'draft', $this->post(42, 'post'));
+    }
+
+    public function testOptedOutPostSkipsEnqueue(): void
+    {
+        $eligible = $this->createMock(EligiblePostTypes::class);
+        $eligible->method('is_eligible')->willReturn(true);
+
+        $opt_out = $this->createMock(PerPostOptOut::class);
+        $opt_out->method('is_opted_in')->with(42)->willReturn(false);
+
+        $scheduler = $this->createMock(PushJobScheduler::class);
+        $scheduler->expects($this->never())->method('enqueue');
+
+        (new PostPublishObserver($eligible, $scheduler, null, $opt_out))
+            ->on_transition('publish', 'draft', $this->post(42, 'post'));
     }
 
     public function testMissingPostObjectIsTolerated(): void
