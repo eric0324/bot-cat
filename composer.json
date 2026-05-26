@@ -1,30 +1,40 @@
 {
-  "name": "eric0324/bot-cat",
-  "description": "",
-  "license": "GPL-2.0",
-  "keywords": [],
-  "homepage": "https://ericwu.asias/",
-  "type": "wordpress-plugin",
-  "authors": [
-        {
-            "name": "EricWu",
-            "email": "smart032410@gmail.com"
+    "name": "bot-cat/bot-cat",
+    "description": "LINE Official Account push-notification plugin for WordPress.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.1",
+        "woocommerce/action-scheduler": "^3.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "brain/monkey": "^2.6",
+        "mockery/mockery": "^1.6",
+        "squizlabs/php_codesniffer": "^3.10",
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BotCat\\": "src/"
         }
-    ],
-  "support": {
-    "issues": "https://wordpress.org/support/plugin/bot-cat/"
-  },
-  "config": {
-    "platform": {
-      "php": "8.2.1"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BotCat\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit",
+        "lint": "phpcs",
+        "fix": "phpcbf"
     }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "require": {},
-  "autoload": {
-    "psr-4": {
-      "BotCat\\": "includes/"
-    }
-  }
 }

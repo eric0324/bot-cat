@@ -1,0 +1,119 @@
+<?php
+/**
+ * @package BotCat\Foundation
+ */
+
+declare(strict_types=1);
+
+namespace BotCat\Foundation;
+
+/**
+ * Defines and installs the plugin's MySQL tables.
+ *
+ * Each table is prefixed `{$wpdb->prefix}botcat_` per the spec. `install()`
+ * delegates to WordPress core's `dbDelta()` so repeat invocations are
+ * idempotent.
+ */
+class Schema {
+
+	public const TABLES = array( 'subscribers', 'push_jobs', 'push_logs' );
+
+	/**
+	 * @return list<string> Fully qualified table names (prefix included).
+	 */
+	public function tables(): array {
+		global $wpdb;
+		$prefix = $wpdb->prefix;
+
+		return array_map(
+			static fn( string $name ): string => $prefix . 'botcat_' . $name,
+			self::TABLES
+		);
+	}
+
+	public function install(): void {
+		if ( ! function_exists( 'dbDelta' ) ) {
+			$upgrade = ABSPATH . 'wp-admin/includes/upgrade.php';
+			if ( file_exists( $upgrade ) ) {
+				require_once $upgrade;
+			}
+		}
+
+		foreach ( self::TABLES as $table ) {
+			dbDelta( $this->sql_for( $table ) );
+		}
+	}
+
+	public function sql_for( string $table ): string {
+		global $wpdb;
+		$prefix          = $wpdb->prefix . 'botcat_';
+		$charset_collate = $this->charset_collate();
+
+		return match ( $table ) {
+			'subscribers' => <<<SQL
+CREATE TABLE {$prefix}subscribers (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    line_user_id VARCHAR(64) NOT NULL,
+    display_name VARCHAR(255) NULL,
+    picture_url TEXT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'active',
+    followed_at DATETIME NULL,
+    unfollowed_at DATETIME NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY  (id),
+    UNIQUE KEY line_user_id (line_user_id),
+    KEY status (status)
+) {$charset_collate};
+SQL
+,
+			'push_jobs' => <<<SQL
+CREATE TABLE {$prefix}push_jobs (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    post_id BIGINT UNSIGNED NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    recipient_count INT UNSIGNED NOT NULL DEFAULT 0,
+    sent_count INT UNSIGNED NOT NULL DEFAULT 0,
+    failed_count INT UNSIGNED NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    started_at DATETIME NULL,
+    finished_at DATETIME NULL,
+    PRIMARY KEY  (id),
+    KEY post_id (post_id),
+    KEY status (status)
+) {$charset_collate};
+SQL
+,
+			'push_logs' => <<<SQL
+CREATE TABLE {$prefix}push_logs (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    job_id BIGINT UNSIGNED NOT NULL,
+    subscriber_id BIGINT UNSIGNED NULL,
+    line_user_id VARCHAR(64) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    error TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY  (id),
+    KEY job_id (job_id),
+    KEY subscriber_id (subscriber_id),
+    KEY created_at (created_at)
+) {$charset_collate};
+SQL
+,
+			default => '',
+		};
+	}
+
+	private function charset_collate(): string {
+		global $wpdb;
+
+		if ( method_exists( $wpdb, 'get_charset_collate' ) ) {
+			return $wpdb->get_charset_collate();
+		}
+
+		$charset = $wpdb->charset ?? 'utf8mb4';
+		$collate = $wpdb->collate ?? 'utf8mb4_unicode_ci';
+
+		return "DEFAULT CHARACTER SET {$charset} COLLATE {$collate}";
+	}
+}

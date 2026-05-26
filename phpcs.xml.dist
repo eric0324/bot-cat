@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<ruleset name="bot-cat">
+    <description>Coding standards for the bot-cat plugin.</description>
+
+    <file>bot-cat.php</file>
+    <file>uninstall.php</file>
+    <file>src</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="8"/>
+    <arg value="sp"/>
+
+    <rule ref="WordPress-Core">
+        <!-- PSR-4 namespacing intentionally diverges from the "class-foo.php" file naming rule. -->
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="Universal.Files.SeparateFunctionsFromOO"/>
+        <!-- Yoda conditions are a stylistic preference; modern PSR / PHP idioms drop them. -->
+        <exclude name="WordPress.PHP.YodaConditions"/>
+        <!-- $wpdb->prefix interpolation inside prepare()d SQL is a known sniff false positive. -->
+        <exclude name="WordPress.DB.PreparedSQL.InterpolatedNotPrepared"/>
+        <exclude name="WordPress.DB.PreparedSQL.NotPrepared"/>
+        <exclude name="WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare"/>
+    </rule>
+
+    <rule ref="WordPress-Docs">
+        <!-- PSR-style codebases lean on namespace + return types; the Squiz "every method needs a full docblock" rule produces noise. -->
+        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParamNameNoMatch"/>
+        <exclude name="Squiz.Commenting.VariableComment.Missing"/>
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+        <exclude name="Generic.Commenting.DocComment.ShortNotCapital"/>
+    </rule>
+
+    <config name="minimum_supported_wp_version" value="7.0"/>
+    <config name="testVersion" value="8.1-"/>
+
+    <rule ref="PHPCompatibilityWP"/>
+
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="bot-cat"/>
+            </property>
+        </properties>
+    </rule>
+</ruleset>

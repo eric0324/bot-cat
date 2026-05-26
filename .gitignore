@@ -3,3 +3,5 @@
 .claude/
 AGENTS.md
 openspec/
+vendor/
+/.phpunit.cache/
