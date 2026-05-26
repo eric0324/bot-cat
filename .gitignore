@@ -1,1 +1,7 @@
 /.idea
+.DS_Store
+.claude/
+AGENTS.md
+openspec/
+vendor/
+/.phpunit.cache/
