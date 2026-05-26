@@ -71,16 +71,21 @@ SQL
 CREATE TABLE {$prefix}push_jobs (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     post_id BIGINT UNSIGNED NOT NULL,
+    post_type VARCHAR(40) NOT NULL DEFAULT 'post',
     status VARCHAR(20) NOT NULL DEFAULT 'pending',
     recipient_count INT UNSIGNED NOT NULL DEFAULT 0,
     sent_count INT UNSIGNED NOT NULL DEFAULT 0,
     failed_count INT UNSIGNED NOT NULL DEFAULT 0,
+    is_test TINYINT(1) NOT NULL DEFAULT 0,
+    last_error TEXT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    triggered_at DATETIME NULL,
     started_at DATETIME NULL,
     finished_at DATETIME NULL,
     PRIMARY KEY  (id),
-    KEY post_id (post_id),
-    KEY status (status)
+    KEY post_status (post_id, status),
+    KEY status_triggered (status, triggered_at),
+    KEY triggered_at (triggered_at)
 ) {$charset_collate};
 SQL
 ,
@@ -92,9 +97,12 @@ CREATE TABLE {$prefix}push_logs (
     line_user_id VARCHAR(64) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'pending',
     error TEXT NULL,
+    attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    is_test TINYINT(1) NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    sent_at DATETIME NULL,
     PRIMARY KEY  (id),
-    KEY job_id (job_id),
+    KEY job_status (job_id, status),
     KEY subscriber_id (subscriber_id),
     KEY created_at (created_at)
 ) {$charset_collate};

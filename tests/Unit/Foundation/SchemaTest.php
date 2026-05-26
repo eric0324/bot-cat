@@ -53,13 +53,37 @@ final class SchemaTest extends TestCase
         $this->assertContains('wp_botcat_push_logs', $tables);
     }
 
-    public function testPushLogsHasIndexesOnForeignKeys(): void
+    public function testPushLogsHasIndexesOnForeignKeysAndJobStatus(): void
     {
         $schema = new Schema();
         $sql = $schema->sql_for('push_logs');
 
-        $this->assertMatchesRegularExpression('/KEY\s+\w*job_id\w*\s*\(\s*job_id\s*\)/i', $sql);
+        $this->assertMatchesRegularExpression('/KEY\s+\w+\s*\(\s*job_id\s*,\s*status\s*\)/i', $sql, 'must have composite (job_id, status) index per W2 spec');
         $this->assertMatchesRegularExpression('/KEY\s+\w*subscriber_id\w*\s*\(\s*subscriber_id\s*\)/i', $sql);
+    }
+
+    public function testPushJobsHasPostStatusCompositeIndex(): void
+    {
+        $sql = (new Schema())->sql_for('push_jobs');
+
+        $this->assertMatchesRegularExpression('/KEY\s+\w+\s*\(\s*post_id\s*,\s*status\s*\)/i', $sql, '(post_id, status) composite index required for idempotency lookup');
+    }
+
+    public function testPushJobsHasTriggeredAtAndTestFlag(): void
+    {
+        $sql = (new Schema())->sql_for('push_jobs');
+
+        $this->assertStringContainsString('triggered_at', $sql);
+        $this->assertStringContainsString('is_test', $sql);
+        $this->assertStringContainsString('post_type', $sql);
+    }
+
+    public function testPushLogsHasIsTestFlag(): void
+    {
+        $sql = (new Schema())->sql_for('push_logs');
+
+        $this->assertStringContainsString('is_test', $sql);
+        $this->assertStringContainsString('attempts', $sql);
     }
 
     public function testInstallCallsDbDeltaWithEverySchemaStatement(): void

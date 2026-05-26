@@ -17,11 +17,20 @@ namespace BotCat\Channel;
  */
 class SettingsPage {
 
-	public const OPTION_GROUP = 'botcat_channel_settings_group';
-	public const SECTION_ID   = 'botcat_channel_section';
-	public const NONCE_ACTION = 'botcat_test_connection';
+	public const OPTION_GROUP     = 'botcat_channel_settings_group';
+	public const SECTION_ID       = 'botcat_channel_section';
+	public const NONCE_ACTION     = 'botcat_test_connection';
+	public const SEND_TEST_NONCE  = 'botcat_send_test_push';
+	public const SEND_TEST_ACTION = 'botcat_send_test_push';
+
+	/** @var \BotCat\Push\PushJobScheduler|null */
+	private ?\BotCat\Push\PushJobScheduler $push_scheduler = null;
 
 	public function __construct( private readonly ChannelSettingsRepository $repository ) {
+	}
+
+	public function set_push_scheduler( \BotCat\Push\PushJobScheduler $scheduler ): void {
+		$this->push_scheduler = $scheduler;
 	}
 
 	public function register_settings(): void {
@@ -139,8 +148,76 @@ class SettingsPage {
 		echo '</form>';
 
 		$this->render_test_connection_form();
+		$this->render_send_test_form();
 
 		echo '</div>';
+	}
+
+	private function render_send_test_form(): void {
+		if ( $this->push_scheduler === null ) {
+			return;
+		}
+
+		$action_url = admin_url( 'admin-post.php' );
+
+		echo '<h2>' . esc_html__( 'Send test push', 'bot-cat' ) . '</h2>';
+		echo '<p>' . esc_html__( 'Send a test message to one or more LINE user IDs (comma or newline separated).', 'bot-cat' ) . '</p>';
+		echo '<form method="post" action="' . esc_url( $action_url ) . '">';
+		printf( '<input type="hidden" name="action" value="%s" />', esc_attr( self::SEND_TEST_ACTION ) );
+		wp_nonce_field( self::SEND_TEST_NONCE );
+		echo '<textarea name="user_ids" rows="3" class="large-text code" placeholder="U1234..., U5678..."></textarea>';
+		submit_button( __( 'Send test push', 'bot-cat' ), 'secondary', 'submit', false );
+		echo '</form>';
+	}
+
+	public function handle_send_test(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Insufficient permissions.', 'bot-cat' ), '', array( 'response' => 403 ) );
+		}
+
+		check_admin_referer( self::SEND_TEST_NONCE );
+
+		$raw = isset( $_POST['user_ids'] ) ? (string) wp_unslash( $_POST['user_ids'] ) : '';
+		$tokens = preg_split( '/[\s,]+/', $raw );
+		if ( ! is_array( $tokens ) ) {
+			$tokens = array();
+		}
+		$ids = array_values(
+			array_unique(
+				array_filter(
+					array_map( 'trim', $tokens ),
+					static fn( string $id ): bool => $id !== '' && str_starts_with( $id, 'U' )
+				)
+			)
+		);
+
+		if ( $ids === array() ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'page'             => 'bot-cat-settings',
+						'botcat_test_push' => 'invalid',
+					),
+					admin_url( 'admin.php' )
+				)
+			);
+			exit;
+		}
+
+		if ( $this->push_scheduler !== null ) {
+			$this->push_scheduler->enqueue_test( 0, $ids );
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'             => 'bot-cat-settings',
+					'botcat_test_push' => 'queued',
+				),
+				admin_url( 'admin.php' )
+			)
+		);
+		exit;
 	}
 
 	private function render_test_result_banner(): void {
