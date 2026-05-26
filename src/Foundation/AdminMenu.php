@@ -14,12 +14,18 @@ namespace BotCat\Foundation;
  * Settings, License. The License page only registers when the Pro
  * edition is active.
  */
-final class AdminMenu {
+class AdminMenu {
 
 	public const MENU_SLUG  = 'bot-cat';
 	public const CAPABILITY = 'manage_options';
 
-	public function __construct( private readonly Edition $edition ) {
+	/**
+	 * @param array<string, callable> $renderers Map of submenu slug => render callback. Slugs not present fall back to a placeholder.
+	 */
+	public function __construct(
+		private readonly Edition $edition,
+		private readonly array $renderers = array()
+	) {
 	}
 
 	public function register(): void {
@@ -28,63 +34,54 @@ final class AdminMenu {
 			__( 'bot-cat', 'bot-cat' ),
 			self::CAPABILITY,
 			self::MENU_SLUG,
-			array( $this, 'render_dashboard' ),
+			$this->renderer_for( self::MENU_SLUG ),
 			'dashicons-format-chat',
 			30
 		);
 
-		$pages = array(
-			array( 'bot-cat', __( 'Dashboard', 'bot-cat' ), 'render_dashboard' ),
-			array( 'bot-cat-subscribers', __( 'Subscribers', 'bot-cat' ), 'render_subscribers' ),
-			array( 'bot-cat-templates', __( 'Templates', 'bot-cat' ), 'render_templates' ),
-			array( 'bot-cat-logs', __( 'Push Logs', 'bot-cat' ), 'render_logs' ),
-			array( 'bot-cat-settings', __( 'Settings', 'bot-cat' ), 'render_settings' ),
-		);
-
-		if ( $this->edition->is_pro() ) {
-			$pages[] = array( 'bot-cat-license', __( 'License', 'bot-cat' ), 'render_license' );
-		}
-
-		foreach ( $pages as [$slug, $title, $callback] ) {
+		foreach ( $this->pages() as $page ) {
+			[ $slug, $title ] = $page;
 			add_submenu_page(
 				self::MENU_SLUG,
 				$title,
 				$title,
 				self::CAPABILITY,
 				$slug,
-				array( $this, $callback )
+				$this->renderer_for( $slug )
 			);
 		}
 	}
 
-	public function render_dashboard(): void {
-		$this->render_placeholder( __( 'Dashboard', 'bot-cat' ) );
-	}
-
-	public function render_subscribers(): void {
-		$this->render_placeholder( __( 'Subscribers', 'bot-cat' ) );
-	}
-
-	public function render_templates(): void {
-		$this->render_placeholder( __( 'Templates', 'bot-cat' ) );
-	}
-
-	public function render_logs(): void {
-		$this->render_placeholder( __( 'Push Logs', 'bot-cat' ) );
-	}
-
-	public function render_settings(): void {
-		$this->render_placeholder( __( 'Settings', 'bot-cat' ) );
-	}
-
-	public function render_license(): void {
-		$this->render_placeholder( __( 'License', 'bot-cat' ) );
-	}
-
-	private function render_placeholder( string $title ): void {
-		printf(
-			'<div class="wrap"><h1>%s</h1></div>',
-			esc_html( $title )
+	/**
+	 * @return list<array{0:string,1:string}>
+	 */
+	private function pages(): array {
+		$pages = array(
+			array( 'bot-cat', __( 'Dashboard', 'bot-cat' ) ),
+			array( 'bot-cat-subscribers', __( 'Subscribers', 'bot-cat' ) ),
+			array( 'bot-cat-templates', __( 'Templates', 'bot-cat' ) ),
+			array( 'bot-cat-logs', __( 'Push Logs', 'bot-cat' ) ),
+			array( 'bot-cat-settings', __( 'Settings', 'bot-cat' ) ),
 		);
+
+		if ( $this->edition->is_pro() ) {
+			$pages[] = array( 'bot-cat-license', __( 'License', 'bot-cat' ) );
+		}
+
+		return $pages;
+	}
+
+	private function renderer_for( string $slug ): callable {
+		if ( isset( $this->renderers[ $slug ] ) ) {
+			return $this->renderers[ $slug ];
+		}
+
+		return function () use ( $slug ): void {
+			printf(
+				'<div class="wrap"><h1>%s</h1><p>%s</p></div>',
+				esc_html( $slug ),
+				esc_html__( 'This page is not implemented yet.', 'bot-cat' )
+			);
+		};
 	}
 }

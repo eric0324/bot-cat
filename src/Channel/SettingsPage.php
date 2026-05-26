@@ -122,6 +122,70 @@ class SettingsPage {
 		);
 	}
 
+	public function render(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Insufficient permissions.', 'bot-cat' ), '', array( 'response' => 403 ) );
+		}
+
+		$this->render_test_result_banner();
+
+		echo '<div class="wrap">';
+		echo '<h1>' . esc_html__( 'bot-cat Settings', 'bot-cat' ) . '</h1>';
+
+		echo '<form method="post" action="options.php">';
+		settings_fields( self::OPTION_GROUP );
+		do_settings_sections( 'bot-cat-settings' );
+		submit_button();
+		echo '</form>';
+
+		$this->render_test_connection_form();
+
+		echo '</div>';
+	}
+
+	private function render_test_result_banner(): void {
+		if ( ! isset( $_GET['botcat_test_ok'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$ok   = (string) $_GET['botcat_test_ok'] === '1';
+		$name = isset( $_GET['botcat_test_name'] ) ? sanitize_text_field( rawurldecode( wp_unslash( (string) $_GET['botcat_test_name'] ) ) ) : '';
+		$err  = isset( $_GET['botcat_test_err'] ) ? sanitize_text_field( rawurldecode( wp_unslash( (string) $_GET['botcat_test_err'] ) ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( $ok ) {
+			printf(
+				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+				esc_html(
+					sprintf(
+						/* translators: %s: LINE Official Account display name. */
+						__( 'Connected to %s', 'bot-cat' ),
+						$name !== '' ? $name : __( 'your LINE Official Account', 'bot-cat' )
+					)
+				)
+			);
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-error is-dismissible"><p>%1$s %2$s</p></div>',
+			esc_html__( 'Connection failed:', 'bot-cat' ),
+			esc_html( $err )
+		);
+	}
+
+	private function render_test_connection_form(): void {
+		$action_url = admin_url( 'admin-post.php' );
+
+		echo '<h2>' . esc_html__( 'Test connection', 'bot-cat' ) . '</h2>';
+		echo '<form method="post" action="' . esc_url( $action_url ) . '">';
+		printf( '<input type="hidden" name="action" value="botcat_test_connection" />' );
+		wp_nonce_field( self::NONCE_ACTION );
+		submit_button( __( 'Test connection', 'bot-cat' ), 'secondary', 'submit', false );
+		echo '</form>';
+	}
+
 	public function handle_test_connection(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'Insufficient permissions.', 'bot-cat' ), '', array( 'response' => 403 ) );

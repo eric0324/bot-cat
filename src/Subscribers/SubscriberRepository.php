@@ -149,6 +149,80 @@ class SubscriberRepository {
 	}
 
 	/**
+	 * @return list<PushLogEntry>
+	 */
+	public function recent_logs_for_subscriber( int $subscriber_id, int $limit = 20 ): array {
+		global $wpdb;
+		$logs = $wpdb->prefix . 'botcat_push_logs';
+		$jobs = $wpdb->prefix . 'botcat_push_jobs';
+
+		$sql = $wpdb->prepare(
+			'SELECT l.id, l.job_id, l.subscriber_id, l.line_user_id, l.status, l.error, l.created_at, j.post_id '
+			. "FROM {$logs} AS l "
+			. "INNER JOIN {$jobs} AS j ON j.id = l.job_id "
+			. 'WHERE l.subscriber_id = %d '
+			. 'ORDER BY l.created_at DESC '
+			. 'LIMIT %d',
+			$subscriber_id,
+			$limit
+		);
+
+		$rows = $wpdb->get_results( $sql, ARRAY_A );
+		if ( ! is_array( $rows ) ) {
+			return array();
+		}
+
+		return array_map(
+			static fn( array $row ): PushLogEntry => PushLogEntry::from_row( $row ),
+			$rows
+		);
+	}
+
+	public function search( SubscribersQuery $query ): SubscriberPage {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE;
+
+		$where_sql = 'WHERE 1=1';
+		$args      = array();
+
+		if ( $query->search !== '' ) {
+			$where_sql .= ' AND (display_name LIKE %s OR line_user_id LIKE %s)';
+			$like       = '%' . $query->search . '%';
+			$args[]     = $like;
+			$args[]     = $like;
+		}
+
+		if ( $query->status !== null ) {
+			$where_sql .= ' AND status = %s';
+			$args[]     = $query->status;
+		}
+
+		$count_sql = "SELECT COUNT(*) FROM {$table} {$where_sql}";
+		$total     = (int) $wpdb->get_var( $args === array() ? $count_sql : $wpdb->prepare( $count_sql, ...$args ) );
+
+		$select_sql  = sprintf(
+			'SELECT id, line_user_id, display_name, picture_url, status, followed_at, unfollowed_at FROM %s %s ORDER BY %s %s LIMIT %%d OFFSET %%d',
+			$table,
+			$where_sql,
+			$query->orderby,
+			$query->order
+		);
+		$select_args = array_merge( $args, array( $query->per_page, $query->offset() ) );
+
+		$rows = $wpdb->get_results( $wpdb->prepare( $select_sql, ...$select_args ), ARRAY_A );
+		if ( ! is_array( $rows ) ) {
+			$rows = array();
+		}
+
+		$subscribers = array_map(
+			static fn( array $row ): Subscriber => Subscriber::from_row( $row ),
+			$rows
+		);
+
+		return new SubscriberPage( $subscribers, $total );
+	}
+
+	/**
 	 * @param list<int> $subscriber_ids
 	 */
 	public function delete_many( array $subscriber_ids ): int {

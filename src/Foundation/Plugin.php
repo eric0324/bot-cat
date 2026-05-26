@@ -48,28 +48,33 @@ final class Plugin {
 		$schema_version = new SchemaVersion( new Schema(), BOT_CAT_VERSION );
 		add_action( 'admin_init', array( $schema_version, 'maybe_upgrade' ) );
 
-		$edition = new Edition();
-		$menu    = new AdminMenu( $edition );
-		add_action( 'admin_menu', array( $menu, 'register' ) );
-
-		$cron = new RetentionCron();
-		add_action( Activator::CRON_HOOK, array( $cron, 'run' ) );
-
 		$channel_repo  = $this->channel_repository();
 		$settings_page = new ChannelSettingsPage( $channel_repo );
 		add_action( 'admin_init', array( $settings_page, 'register_settings' ) );
 		add_action( 'admin_post_botcat_test_connection', array( $settings_page, 'handle_test_connection' ) );
 
 		$subscribers      = new SubscriberRepository();
+		$subscribers_page = new SubscribersPage( $subscribers );
+
+		$edition = new Edition();
+		$menu    = new AdminMenu(
+			$edition,
+			array(
+				'bot-cat-subscribers' => array( $subscribers_page, 'render' ),
+				'bot-cat-settings'    => array( $settings_page, 'render' ),
+			)
+		);
+		add_action( 'admin_menu', array( $menu, 'register' ) );
+
+		$cron = new RetentionCron();
+		add_action( Activator::CRON_HOOK, array( $cron, 'run' ) );
+
 		$profile_fetcher  = new LineProfileFetcher();
 		$follow_handler   = new FollowHandler( $subscribers, $channel_repo, $profile_fetcher );
 		$unfollow_handler = new UnfollowHandler( $subscribers );
 
 		$webhook = new WebhookEndpoint( $channel_repo, $follow_handler, $unfollow_handler );
 		add_action( 'rest_api_init', array( $webhook, 'register' ) );
-
-		$subscribers_page = new SubscribersPage( $subscribers );
-		add_action( 'admin_menu', array( $subscribers_page, 'register' ), 20 );
 
 		add_action(
 			FollowHandler::RETRY_HOOK,
