@@ -49,6 +49,15 @@ use BotCat\Tags\TagCommandHandler;
 use BotCat\Tags\TagCommandParser;
 use BotCat\Tags\TagRepository;
 use BotCat\Tags\TagsPage;
+use BotCat\License\LicenseActivationHandler;
+use BotCat\License\LicenseGate;
+use BotCat\License\LicensePage;
+use BotCat\License\LicenseRepository;
+use BotCat\License\LicenseRevalidationCron;
+use BotCat\License\LicenseStatusEvaluator;
+use BotCat\License\PolarClient;
+use BotCat\License\PolarWebhookEndpoint;
+use BotCat\License\UpdateChannel;
 use BotCat\Shortener\ClickLogRepository;
 use BotCat\Shortener\ClickRedirectHandler;
 use BotCat\Shortener\LinkRewriter;
@@ -112,6 +121,13 @@ final class Plugin {
 		// Pro Flex template.
 		$flex_template_repo = new FlexTemplateRepository();
 		$flex_builder       = new FlexMessageBuilder( $template_renderer, new HeroImageResolver() );
+
+		// License (must come before Edition so the filter is registered).
+		$license_repo      = new LicenseRepository();
+		$license_evaluator = new LicenseStatusEvaluator();
+		$license_gate      = new LicenseGate( $license_repo, $license_evaluator );
+		$polar_client      = new PolarClient();
+		add_filter( 'botcat_is_pro', array( $license_gate, 'filter_is_pro' ) );
 
 		// Edition + rules.
 		$edition   = new Edition();
@@ -200,6 +216,27 @@ final class Plugin {
 		if ( $edition->is_pro() ) {
 			$menu_renderers['bot-cat-tags']        = array( $tags_page, 'render' );
 			$menu_renderers['bot-cat-short-links'] = array( $short_links_page, 'render' );
+
+			$license_page       = new LicensePage( $license_repo, $license_evaluator );
+			$activation_handler = new LicenseActivationHandler( $license_repo, $polar_client );
+			$polar_webhook      = new PolarWebhookEndpoint( $license_repo );
+			$revalidation_cron  = new LicenseRevalidationCron( $license_repo, $polar_client );
+
+			$menu_renderers['bot-cat-license'] = array( $license_page, 'render' );
+
+			add_action( 'admin_post_' . LicensePage::ACTION_ACTIVATE, array( $activation_handler, 'handle_activate' ) );
+			add_action( 'admin_post_' . LicensePage::ACTION_DEACTIVATE, array( $activation_handler, 'handle_deactivate' ) );
+			add_action( 'rest_api_init', array( $polar_webhook, 'register' ) );
+			add_action( LicenseRevalidationCron::HOOK, array( $revalidation_cron, 'run' ) );
+
+			// Schedule the daily revalidation if not already.
+			if ( function_exists( 'wp_next_scheduled' ) && ! wp_next_scheduled( LicenseRevalidationCron::HOOK ) ) {
+				wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', LicenseRevalidationCron::HOOK );
+			}
+
+			// Pro auto-update channel.
+			$update_channel = new UpdateChannel( $license_repo, plugin_basename( $this->plugin_file ), BOT_CAT_VERSION );
+			$update_channel->register();
 		}
 		$menu = new AdminMenu( $edition, $menu_renderers );
 		add_action( 'admin_menu', array( $menu, 'register' ) );
